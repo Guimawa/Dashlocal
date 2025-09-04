@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function GeneratorScreen() {
-  const [userPrompt, setUserPrompt] = useState('');
-  const [generatedCode, setGeneratedCode] = useState('');
+  const [userPrompt, setUserPrompt] = useState("");
+  const [generatedCode, setGeneratedCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleGenerate = async () => {
     if (!userPrompt.trim()) return;
     setLoading(true);
 
-    const res = await fetch('/api/generate/react', {
-      method: 'POST',
+    const res = await fetch("/api/generate/react", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         prompt: userPrompt,
@@ -23,7 +23,7 @@ export default function GeneratorScreen() {
     });
 
     const data = await res.json();
-    setGeneratedCode(data.code || '// Aucun code généré');
+    setGeneratedCode(data.code || "// Aucun code généré");
     setLoading(false);
   };
 
@@ -43,7 +43,7 @@ export default function GeneratorScreen() {
         disabled={loading}
         className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
       >
-        {loading ? 'Génération en cours...' : 'Générer'}
+        {loading ? "Génération en cours..." : "Générer"}
       </button>
 
       <pre className="bg-gray-100 p-4 rounded whitespace-pre overflow-x-auto">

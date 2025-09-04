@@ -1,10 +1,9 @@
-
 /**
  * @file Système de mémoire des générations
  * @module memory
  */
 
-import chalk from 'chalk';
+import chalk from "chalk";
 
 /**
  * @class MemorySystem
@@ -23,7 +22,7 @@ class MemorySystem {
    */
   constructor() {
     this.#memoryStore = new Map();
-    console.log(chalk.green('MemorySystem initialisé.'));
+    console.log(chalk.green("MemorySystem initialisé."));
   }
 
   /**
@@ -38,13 +37,19 @@ class MemorySystem {
    * await memory.addEntry('user-123', { role: 'assistant', content: '```jsx\n<button>Click me</button>\n```' });
    */
   async addEntry(sessionId, entry) {
-    if (!sessionId || typeof sessionId !== 'string') {
-      console.error(chalk.red('Erreur: sessionId doit être une chaîne de caractères valide.'));
-      throw new Error('Invalid sessionId.');
+    if (!sessionId || typeof sessionId !== "string") {
+      console.error(
+        chalk.red(
+          "Erreur: sessionId doit être une chaîne de caractères valide.",
+        ),
+      );
+      throw new Error("Invalid sessionId.");
     }
-    if (!entry || typeof entry !== 'object') {
-      console.error(chalk.red('Erreur: L\'entrée de mémoire doit être un objet valide.'));
-      throw new Error('Invalid memory entry.');
+    if (!entry || typeof entry !== "object") {
+      console.error(
+        chalk.red("Erreur: L'entrée de mémoire doit être un objet valide."),
+      );
+      throw new Error("Invalid memory entry.");
     }
 
     try {
@@ -52,9 +57,17 @@ class MemorySystem {
         this.#memoryStore.set(sessionId, []);
       }
       this.#memoryStore.get(sessionId).push(entry);
-      console.log(chalk.blue(`Entrée ajoutée à la mémoire pour la session: ${sessionId}.`));
+      console.log(
+        chalk.blue(
+          `Entrée ajoutée à la mémoire pour la session: ${sessionId}.`,
+        ),
+      );
     } catch (error) {
-      console.error(chalk.red(`Erreur lors de l\'ajout à la mémoire pour la session ${sessionId}: ${error.message}`));
+      console.error(
+        chalk.red(
+          `Erreur lors de l\'ajout à la mémoire pour la session ${sessionId}: ${error.message}`,
+        ),
+      );
       throw new Error(`Failed to add entry to memory: ${error.message}`);
     }
   }
@@ -70,18 +83,32 @@ class MemorySystem {
    * console.log('Entrées de la session user-123:', entries);
    */
   async getEntries(sessionId) {
-    if (!sessionId || typeof sessionId !== 'string') {
-      console.error(chalk.red('Erreur: sessionId doit être une chaîne de caractères valide.'));
-      throw new Error('Invalid sessionId.');
+    if (!sessionId || typeof sessionId !== "string") {
+      console.error(
+        chalk.red(
+          "Erreur: sessionId doit être une chaîne de caractères valide.",
+        ),
+      );
+      throw new Error("Invalid sessionId.");
     }
 
     try {
       const entries = this.#memoryStore.get(sessionId) || [];
-      console.log(chalk.blue(`Récupération de ${entries.length} entrées pour la session: ${sessionId}.`));
+      console.log(
+        chalk.blue(
+          `Récupération de ${entries.length} entrées pour la session: ${sessionId}.`,
+        ),
+      );
       return entries;
     } catch (error) {
-      console.error(chalk.red(`Erreur lors de la récupération des entrées pour la session ${sessionId}: ${error.message}`));
-      throw new Error(`Failed to retrieve entries from memory: ${error.message}`);
+      console.error(
+        chalk.red(
+          `Erreur lors de la récupération des entrées pour la session ${sessionId}: ${error.message}`,
+        ),
+      );
+      throw new Error(
+        `Failed to retrieve entries from memory: ${error.message}`,
+      );
     }
   }
 
@@ -96,20 +123,32 @@ class MemorySystem {
    * console.log('Mémoire effacée pour la session user-123.');
    */
   async clearEntries(sessionId) {
-    if (!sessionId || typeof sessionId !== 'string') {
-      console.error(chalk.red('Erreur: sessionId doit être une chaîne de caractères valide.'));
-      throw new Error('Invalid sessionId.');
+    if (!sessionId || typeof sessionId !== "string") {
+      console.error(
+        chalk.red(
+          "Erreur: sessionId doit être une chaîne de caractères valide.",
+        ),
+      );
+      throw new Error("Invalid sessionId.");
     }
 
     try {
       if (this.#memoryStore.has(sessionId)) {
         this.#memoryStore.delete(sessionId);
-        console.log(chalk.blue(`Mémoire effacée pour la session: ${sessionId}.`));
+        console.log(
+          chalk.blue(`Mémoire effacée pour la session: ${sessionId}.`),
+        );
       } else {
-        console.log(chalk.yellow(`Aucune entrée trouvée pour la session: ${sessionId}.`));
+        console.log(
+          chalk.yellow(`Aucune entrée trouvée pour la session: ${sessionId}.`),
+        );
       }
     } catch (error) {
-      console.error(chalk.red(`Erreur lors de l\'effacement des entrées pour la session ${sessionId}: ${error.message}`));
+      console.error(
+        chalk.red(
+          `Erreur lors de l\'effacement des entrées pour la session ${sessionId}: ${error.message}`,
+        ),
+      );
       throw new Error(`Failed to clear entries from memory: ${error.message}`);
     }
   }
@@ -130,27 +169,39 @@ class MemorySystem {
    * console.log('Les 2 dernières entrées de la session user-456:', lastTwoEntries);
    */
   async getLatestEntries(sessionId, count) {
-    if (!sessionId || typeof sessionId !== 'string') {
-      console.error(chalk.red('Erreur: sessionId doit être une chaîne de caractères valide.'));
-      throw new Error('Invalid sessionId.');
+    if (!sessionId || typeof sessionId !== "string") {
+      console.error(
+        chalk.red(
+          "Erreur: sessionId doit être une chaîne de caractères valide.",
+        ),
+      );
+      throw new Error("Invalid sessionId.");
     }
-    if (typeof count !== 'number' || count < 0) {
-      console.error(chalk.red('Erreur: count doit être un nombre positif.'));
-      throw new Error('Invalid count for latest entries.');
+    if (typeof count !== "number" || count < 0) {
+      console.error(chalk.red("Erreur: count doit être un nombre positif."));
+      throw new Error("Invalid count for latest entries.");
     }
 
     try {
       const entries = this.#memoryStore.get(sessionId) || [];
       const latestEntries = entries.slice(Math.max(entries.length - count, 0));
-      console.log(chalk.blue(`Récupération des ${latestEntries.length} dernières entrées pour la session: ${sessionId}.`));
+      console.log(
+        chalk.blue(
+          `Récupération des ${latestEntries.length} dernières entrées pour la session: ${sessionId}.`,
+        ),
+      );
       return latestEntries;
     } catch (error) {
-      console.error(chalk.red(`Erreur lors de la récupération des dernières entrées pour la session ${sessionId}: ${error.message}`));
-      throw new Error(`Failed to retrieve latest entries from memory: ${error.message}`);
+      console.error(
+        chalk.red(
+          `Erreur lors de la récupération des dernières entrées pour la session ${sessionId}: ${error.message}`,
+        ),
+      );
+      throw new Error(
+        `Failed to retrieve latest entries from memory: ${error.message}`,
+      );
     }
   }
 }
 
 export default MemorySystem;
-
-

@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ArrowLeft, Sparkles, Download, Eye } from 'lucide-react';
-import Link from 'next/link';
+import { useState } from "react";
+import { ArrowLeft, Sparkles, Download, Eye } from "lucide-react";
+import Link from "next/link";
 
 export default function GenerateHandshakePage() {
-  const [userPrompt, setUserPrompt] = useState('');
+  const [userPrompt, setUserPrompt] = useState("");
   const [generatedProject, setGeneratedProject] = useState(null);
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState({
-    name: 'handshake-custom',
-    type: 'dashboard',
+    name: "handshake-custom",
+    type: "dashboard",
     includeCharts: true,
     includeNetwork: true,
-    darkMode: true
+    darkMode: true,
   });
 
   const handleGenerate = async () => {
@@ -21,10 +21,10 @@ export default function GenerateHandshakePage() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/generate/handshake', {
-        method: 'POST',
+      const res = await fetch("/api/generate/handshake", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           prompt: userPrompt,
@@ -36,10 +36,10 @@ export default function GenerateHandshakePage() {
       if (data.success) {
         setGeneratedProject(data.project);
       } else {
-        console.error('Erreur génération:', data.error);
+        console.error("Erreur génération:", data.error);
       }
     } catch (error) {
-      console.error('Erreur API:', error);
+      console.error("Erreur API:", error);
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,9 @@ export default function GenerateHandshakePage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Générer avec Handshake</h1>
-          <p className="text-gray-600 dark:text-gray-400">Créez un dashboard basé sur handshake-react-pure</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Créez un dashboard basé sur handshake-react-pure
+          </p>
         </div>
       </div>
 
@@ -69,7 +71,7 @@ export default function GenerateHandshakePage() {
               <Sparkles className="text-accent-1" size={20} />
               Configuration
             </h2>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -78,7 +80,9 @@ export default function GenerateHandshakePage() {
                 <input
                   type="text"
                   value={config.name}
-                  onChange={(e) => setConfig({...config, name: e.target.value})}
+                  onChange={(e) =>
+                    setConfig({ ...config, name: e.target.value })
+                  }
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   placeholder="mon-dashboard"
                 />
@@ -90,7 +94,9 @@ export default function GenerateHandshakePage() {
                 </label>
                 <select
                   value={config.type}
-                  onChange={(e) => setConfig({...config, type: e.target.value})}
+                  onChange={(e) =>
+                    setConfig({ ...config, type: e.target.value })
+                  }
                   className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                 >
                   <option value="dashboard">Dashboard</option>
@@ -105,30 +111,42 @@ export default function GenerateHandshakePage() {
                   <input
                     type="checkbox"
                     checked={config.includeCharts}
-                    onChange={(e) => setConfig({...config, includeCharts: e.target.checked})}
+                    onChange={(e) =>
+                      setConfig({ ...config, includeCharts: e.target.checked })
+                    }
                     className="rounded border-gray-300 text-accent-1 focus:ring-accent-1"
                   />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Inclure les graphiques (Recharts)</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Inclure les graphiques (Recharts)
+                  </span>
                 </label>
-                
+
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={config.includeNetwork}
-                    onChange={(e) => setConfig({...config, includeNetwork: e.target.checked})}
+                    onChange={(e) =>
+                      setConfig({ ...config, includeNetwork: e.target.checked })
+                    }
                     className="rounded border-gray-300 text-accent-1 focus:ring-accent-1"
                   />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Inclure le réseau de connexions</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Inclure le réseau de connexions
+                  </span>
                 </label>
-                
+
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={config.darkMode}
-                    onChange={(e) => setConfig({...config, darkMode: e.target.checked})}
+                    onChange={(e) =>
+                      setConfig({ ...config, darkMode: e.target.checked })
+                    }
                     className="rounded border-gray-300 text-accent-1 focus:ring-accent-1"
                   />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Mode sombre par défaut</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Mode sombre par défaut
+                  </span>
                 </label>
               </div>
             </div>
@@ -136,14 +154,16 @@ export default function GenerateHandshakePage() {
 
           {/* Prompt */}
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-glow">
-            <h2 className="text-xl font-semibold mb-4">Description du projet</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Description du projet
+            </h2>
             <textarea
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
               placeholder="Ex: Créez un dashboard de monitoring pour une application e-commerce avec des métriques de vente, des graphiques de performance et un système d'alertes..."
               className="w-full h-40 border border-gray-300 dark:border-gray-600 p-4 rounded-lg resize-none font-mono bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             />
-            
+
             <button
               onClick={handleGenerate}
               disabled={loading || !userPrompt.trim()}
@@ -168,17 +188,26 @@ export default function GenerateHandshakePage() {
         <div className="space-y-6">
           {generatedProject ? (
             <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-glow">
-              <h2 className="text-xl font-semibold mb-4 text-accent-1">✅ Projet généré !</h2>
-              
+              <h2 className="text-xl font-semibold mb-4 text-accent-1">
+                ✅ Projet généré !
+              </h2>
+
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-lg">{generatedProject.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">{generatedProject.description}</p>
+                  <h3 className="font-semibold text-lg">
+                    {generatedProject.name}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    {generatedProject.description}
+                  </p>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   {generatedProject.tech.map((tech, index) => (
-                    <span key={index} className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                    <span
+                      key={index}
+                      className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded"
+                    >
                       {tech}
                     </span>
                   ))}
@@ -214,7 +243,9 @@ export default function GenerateHandshakePage() {
 
           {/* Aperçu des fonctionnalités */}
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-glow">
-            <h2 className="text-xl font-semibold mb-4">Fonctionnalités incluses</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Fonctionnalités incluses
+            </h2>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li className="flex items-center gap-2">
                 <span className="text-accent-1">✓</span>

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
-import TopMenu from '../ui/TopMenu';
-import SidePanel from '../ui/SidePanel';
-import MainPanel from '../ui/MainPanel';
-import BottomPanel from '../ui/BottomPanel';
-import { AppProvider } from '../../context/AppContext';
+import { ReactNode } from "react";
+import TopMenu from "../ui/TopMenu";
+import SidePanel from "../ui/SidePanel";
+import MainPanel from "../ui/MainPanel";
+import BottomPanel from "../ui/BottomPanel";
+import { AppProvider } from "../../context/AppContext";
 
 interface JarvisLayoutProps {
   children: ReactNode;

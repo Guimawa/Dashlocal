@@ -1,5 +1,6 @@
 export default function ActivityLog({ entries }) {
-  if (!entries.length) return <p className="text-gray-500">Aucune activité récente.</p>;
+  if (!entries.length)
+    return <p className="text-gray-500">Aucune activité récente.</p>;
 
   return (
     <ul className="space-y-2">

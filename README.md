@@ -122,18 +122,21 @@ jarvis-ultra-instinct/
 ## 🔧 Générateurs
 
 ### ReactGenerator
+
 - Composants React/Next.js
 - Hooks personnalisés
 - Pages Next.js
 - Support TypeScript
 
 ### StorybookGenerator
+
 - Stories automatiques
 - Configuration Storybook
 - Addons essentiels
 - Responsive design
 
 ### TestGenerator
+
 - Tests unitaires
 - Tests d'intégration
 - Tests d'accessibilité
@@ -159,6 +162,7 @@ Jarvis Ultra Instinct inclut un système de mémoire intelligent qui :
 ## 🎨 Design System
 
 Support intégré pour :
+
 - **Tailwind CSS**
 - **shadcn/ui**
 - **Material-UI**

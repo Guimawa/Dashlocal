@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import LivePreview from '@/components/ui/LivePreview';
-import CodeEditor from '@/components/ui/CodeEditor';
+import { useState } from "react";
+import LivePreview from "@/components/ui/LivePreview";
+import CodeEditor from "@/components/ui/CodeEditor";
 
 export default function TemplatesScreen() {
-  const [compiledCode, setCompiledCode] = useState('');
+  const [compiledCode, setCompiledCode] = useState("");
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

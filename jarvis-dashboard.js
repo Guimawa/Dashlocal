@@ -9,22 +9,22 @@
 // avec métriques en temps réel, logs et interface d'administration
 // ==============================================
 
-import 'dotenv/config';
-import express from 'express';
-import { createServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import cors from 'cors';
-import compression from 'compression';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import "dotenv/config";
+import express from "express";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
+import path from "path";
+import { fileURLToPath } from "url";
+import cors from "cors";
+import compression from "compression";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
-import JarvisBrain from './src/core/brain.js';
-import MemorySystem from './src/core/memory.js';
-import LearningSystem from './src/core/learning.js';
-import Logger from './src/core/logger.js';
-import fs from 'fs/promises';
+import JarvisBrain from "./src/core/brain.js";
+import MemorySystem from "./src/core/memory.js";
+import LearningSystem from "./src/core/learning.js";
+import Logger from "./src/core/logger.js";
+import fs from "fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,31 +36,31 @@ class JarvisDashboard {
   constructor(config = {}) {
     this.config = {
       port: process.env.PORT || 3000,
-      host: '0.0.0.0',
+      host: "0.0.0.0",
       enableRealTimeMetrics: true,
       enableLogs: true,
       enableAPI: true,
       maxLogEntries: 1000,
       metricsInterval: 5000, // 5 secondes
-      ...config
+      ...config,
     };
-    
+
     // Initialisation Express
     this.app = express();
     this.server = createServer(this.app);
     this.io = new SocketIOServer(this.server, {
       cors: {
         origin: "*",
-        methods: ["GET", "POST"]
-      }
+        methods: ["GET", "POST"],
+      },
     });
-    
+
     // Systèmes Jarvis
     this.brain = new JarvisBrain();
     this.memory = new MemorySystem();
     this.learning = new LearningSystem();
-    this.logger = new Logger('Dashboard');
-    
+    this.logger = new Logger("Dashboard");
+
     // État du dashboard
     this.state = {
       isRunning: false,
@@ -71,388 +71,393 @@ class JarvisDashboard {
         errors: 0,
         averageResponseTime: 0,
         systemLoad: 0,
-        memoryUsage: 0
+        memoryUsage: 0,
       },
       logs: [],
-      activeConnections: new Set()
+      activeConnections: new Set(),
     };
-    
+
     this.setupMiddleware();
     this.setupRoutes();
     this.setupSocketIO();
     this.setupEventListeners();
   }
-  
+
   /**
    * Configuration des middlewares Express
    */
   setupMiddleware() {
     // Sécurité
-    this.app.use(helmet({
-      contentSecurityPolicy: false // Désactivé pour le développement
-    }));
-    
+    this.app.use(
+      helmet({
+        contentSecurityPolicy: false, // Désactivé pour le développement
+      }),
+    );
+
     // CORS
-    this.app.use(cors({
-      origin: '*',
-      credentials: true
-    }));
-    
+    this.app.use(
+      cors({
+        origin: "*",
+        credentials: true,
+      }),
+    );
+
     // Compression
     this.app.use(compression());
-    
+
     // Rate limiting
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100 // limite chaque IP à 100 requêtes par fenêtre
+      max: 100, // limite chaque IP à 100 requêtes par fenêtre
     });
-    this.app.use('/api/', limiter);
-    
+    this.app.use("/api/", limiter);
+
     // Parsing JSON
-    this.app.use(express.json({ limit: '10mb' }));
+    this.app.use(express.json({ limit: "10mb" }));
     this.app.use(express.urlencoded({ extended: true }));
-    
+
     // Fichiers statiques
-    this.app.use(express.static(path.join(__dirname, 'public')));
-    
+    this.app.use(express.static(path.join(__dirname, "public")));
+
     // Logging des requêtes
     this.app.use((req, res, next) => {
       const start = Date.now();
-      
-      res.on('finish', () => {
+
+      res.on("finish", () => {
         const duration = Date.now() - start;
         this.logRequest(req, res, duration);
       });
-      
+
       next();
     });
   }
-  
+
   /**
    * Configuration des routes
    */
   setupRoutes() {
     // Route principale - Interface web
-    this.app.get('/', (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+    this.app.get("/", (req, res) => {
+      res.sendFile(path.join(__dirname, "public", "dashboard.html"));
     });
-    
+
     // API Routes
     if (this.config.enableAPI) {
       this.setupAPIRoutes();
     }
-    
+
     // Route de santé
-    this.app.get('/health', (req, res) => {
+    this.app.get("/health", (req, res) => {
       res.json({
-        status: 'healthy',
+        status: "healthy",
         uptime: Date.now() - (this.state.startTime || Date.now()),
-        version: '2.0.0',
+        version: "2.0.0",
         brain: this.brain.getStatus(),
         memory: this.state.metrics.memoryUsage,
-        connections: this.state.connectedClients
+        connections: this.state.connectedClients,
       });
     });
-    
+
     // Gestion des erreurs 404
-    this.app.use('*', (req, res) => {
+    this.app.use("*", (req, res) => {
       res.status(404).json({
-        error: 'Route non trouvée',
-        path: req.originalUrl
+        error: "Route non trouvée",
+        path: req.originalUrl,
       });
     });
-    
+
     // Gestionnaire d'erreurs global
     this.app.use((error, req, res, next) => {
-      this.logger.error('Erreur Express:', error);
-      
+      this.logger.error("Erreur Express:", error);
+
       res.status(500).json({
-        error: 'Erreur interne du serveur',
-        message: error.message
+        error: "Erreur interne du serveur",
+        message: error.message,
       });
     });
   }
-  
+
   /**
    * Configuration des routes API
    */
   setupAPIRoutes() {
     const apiRouter = express.Router();
-    
+
     // Métriques système
-    apiRouter.get('/metrics', (req, res) => {
+    apiRouter.get("/metrics", (req, res) => {
       res.json({
         system: this.getSystemMetrics(),
         brain: this.brain.getStatus(),
         learning: this.learning.getStats(),
-        dashboard: this.state.metrics
+        dashboard: this.state.metrics,
       });
     });
-    
+
     // Logs système
-    apiRouter.get('/logs', (req, res) => {
-      const { limit = 100, level = 'all' } = req.query;
-      
+    apiRouter.get("/logs", (req, res) => {
+      const { limit = 100, level = "all" } = req.query;
+
       let logs = this.state.logs;
-      
-      if (level !== 'all') {
-        logs = logs.filter(log => log.level === level);
+
+      if (level !== "all") {
+        logs = logs.filter((log) => log.level === level);
       }
-      
+
       res.json({
         logs: logs.slice(-parseInt(limit)),
-        total: logs.length
+        total: logs.length,
       });
     });
-    
+
     // Génération de code via API
-    apiRouter.post('/generate', async (req, res) => {
+    apiRouter.post("/generate", async (req, res) => {
       try {
         const request = req.body;
         const result = await this.brain.processRequest(request);
-        
+
         res.json(result);
-        
       } catch (error) {
-        this.logger.error('Erreur génération API:', error);
+        this.logger.error("Erreur génération API:", error);
         res.status(500).json({
-          error: 'Erreur lors de la génération',
-          message: error.message
+          error: "Erreur lors de la génération",
+          message: error.message,
         });
       }
     });
-    
+
     // Contrôle du cerveau
-    apiRouter.post('/brain/restart', async (req, res) => {
+    apiRouter.post("/brain/restart", async (req, res) => {
       try {
         await this.brain.shutdown();
         await this.brain.initialize();
-        
-        res.json({ message: 'Cerveau redémarré avec succès' });
-        
+
+        res.json({ message: "Cerveau redémarré avec succès" });
       } catch (error) {
         res.status(500).json({
-          error: 'Erreur lors du redémarrage',
-          message: error.message
+          error: "Erreur lors du redémarrage",
+          message: error.message,
         });
       }
     });
-    
+
     // Statistiques d'apprentissage
-    apiRouter.get('/learning/stats', (req, res) => {
+    apiRouter.get("/learning/stats", (req, res) => {
       res.json(this.learning.getStats());
     });
-    
+
     // Réinitialisation de l'apprentissage
-    apiRouter.post('/learning/reset', async (req, res) => {
+    apiRouter.post("/learning/reset", async (req, res) => {
       try {
         await this.learning.reset();
-        res.json({ message: 'Apprentissage réinitialisé' });
-        
+        res.json({ message: "Apprentissage réinitialisé" });
       } catch (error) {
         res.status(500).json({
-          error: 'Erreur lors de la réinitialisation',
-          message: error.message
+          error: "Erreur lors de la réinitialisation",
+          message: error.message,
         });
       }
     });
-    
+
     // Mémoire système
-    apiRouter.get('/memory/stats', async (req, res) => {
+    apiRouter.get("/memory/stats", async (req, res) => {
       try {
         const stats = await this.memory.getStats();
         res.json(stats);
-        
       } catch (error) {
         res.status(500).json({
-          error: 'Erreur lors de la récupération des stats mémoire',
-          message: error.message
+          error: "Erreur lors de la récupération des stats mémoire",
+          message: error.message,
         });
       }
     });
-    
+
     // Configuration
-    apiRouter.get('/config', (req, res) => {
+    apiRouter.get("/config", (req, res) => {
       res.json({
         dashboard: this.config,
-        brain: this.brain.config
+        brain: this.brain.config,
       });
     });
-    
-    apiRouter.put('/config', (req, res) => {
+
+    apiRouter.put("/config", (req, res) => {
       try {
         const newConfig = req.body;
-        
+
         // Mise à jour sécurisée de la configuration
         Object.assign(this.config, newConfig.dashboard || {});
-        
-        res.json({ message: 'Configuration mise à jour' });
-        
+
+        res.json({ message: "Configuration mise à jour" });
       } catch (error) {
         res.status(500).json({
-          error: 'Erreur lors de la mise à jour de la configuration',
-          message: error.message
+          error: "Erreur lors de la mise à jour de la configuration",
+          message: error.message,
         });
       }
     });
-    
-    this.app.use('/api', apiRouter);
+
+    this.app.use("/api", apiRouter);
   }
-  
+
   /**
    * Configuration de Socket.IO pour les métriques temps réel
    */
   setupSocketIO() {
-    this.io.on('connection', (socket) => {
+    this.io.on("connection", (socket) => {
       this.state.connectedClients++;
       this.state.activeConnections.add(socket);
-      
-      this.logger.info(`Client connecté: ${socket.id} (Total: ${this.state.connectedClients})`);
-      
+
+      this.logger.info(
+        `Client connecté: ${socket.id} (Total: ${this.state.connectedClients})`,
+      );
+
       // Envoi des données initiales
-      socket.emit('initial-data', {
+      socket.emit("initial-data", {
         metrics: this.getSystemMetrics(),
         brain: this.brain.getStatus(),
-        logs: this.state.logs.slice(-50)
+        logs: this.state.logs.slice(-50),
       });
-      
+
       // Gestion des événements client
-      socket.on('request-metrics', () => {
-        socket.emit('metrics-update', this.getSystemMetrics());
+      socket.on("request-metrics", () => {
+        socket.emit("metrics-update", this.getSystemMetrics());
       });
-      
-      socket.on('request-logs', (options = {}) => {
-        const { limit = 50, level = 'all' } = options;
+
+      socket.on("request-logs", (options = {}) => {
+        const { limit = 50, level = "all" } = options;
         let logs = this.state.logs;
-        
-        if (level !== 'all') {
-          logs = logs.filter(log => log.level === level);
+
+        if (level !== "all") {
+          logs = logs.filter((log) => log.level === level);
         }
-        
-        socket.emit('logs-update', logs.slice(-limit));
+
+        socket.emit("logs-update", logs.slice(-limit));
       });
-      
-      socket.on('generate-code', async (request) => {
+
+      socket.on("generate-code", async (request) => {
         try {
           const result = await this.brain.processRequest(request);
-          socket.emit('generation-result', result);
-          
+          socket.emit("generation-result", result);
         } catch (error) {
-          socket.emit('generation-error', {
+          socket.emit("generation-error", {
             error: error.message,
-            request
+            request,
           });
         }
       });
-      
-      socket.on('disconnect', () => {
+
+      socket.on("disconnect", () => {
         this.state.connectedClients--;
         this.state.activeConnections.delete(socket);
-        
-        this.logger.info(`Client déconnecté: ${socket.id} (Total: ${this.state.connectedClients})`);
+
+        this.logger.info(
+          `Client déconnecté: ${socket.id} (Total: ${this.state.connectedClients})`,
+        );
       });
     });
   }
-  
+
   /**
    * Configuration des écouteurs d'événements
    */
   setupEventListeners() {
     // Événements du cerveau
-    this.brain.on('initialized', () => {
-      this.broadcastEvent('brain-initialized', this.brain.getStatus());
+    this.brain.on("initialized", () => {
+      this.broadcastEvent("brain-initialized", this.brain.getStatus());
     });
-    
-    this.brain.on('taskCompleted', (data) => {
-      this.broadcastEvent('task-completed', data);
+
+    this.brain.on("taskCompleted", (data) => {
+      this.broadcastEvent("task-completed", data);
     });
-    
+
     // Événements d'apprentissage
-    this.learning.on('patternDiscovered', (data) => {
-      this.broadcastEvent('pattern-discovered', data);
-      this.addLog('info', `Nouveau pattern découvert: ${data.pattern.category}`);
+    this.learning.on("patternDiscovered", (data) => {
+      this.broadcastEvent("pattern-discovered", data);
+      this.addLog(
+        "info",
+        `Nouveau pattern découvert: ${data.pattern.category}`,
+      );
     });
-    
-    this.learning.on('optimizationApplied', (data) => {
-      this.broadcastEvent('optimization-applied', data);
-      this.addLog('info', `Optimisation appliquée: ${data.optimization.type}`);
+
+    this.learning.on("optimizationApplied", (data) => {
+      this.broadcastEvent("optimization-applied", data);
+      this.addLog("info", `Optimisation appliquée: ${data.optimization.type}`);
     });
-    
+
     // Gestion des signaux système
-    process.on('SIGINT', () => {
-      this.logger.info('Signal SIGINT reçu, arrêt en cours...');
+    process.on("SIGINT", () => {
+      this.logger.info("Signal SIGINT reçu, arrêt en cours...");
       this.shutdown();
     });
-    
-    process.on('SIGTERM', () => {
-      this.logger.info('Signal SIGTERM reçu, arrêt en cours...');
+
+    process.on("SIGTERM", () => {
+      this.logger.info("Signal SIGTERM reçu, arrêt en cours...");
       this.shutdown();
     });
   }
-  
+
   /**
    * Démarrage du dashboard
    */
   async start() {
     try {
-      this.logger.info('🚀 Démarrage du dashboard Jarvis...');
-      
+      this.logger.info("🚀 Démarrage du dashboard Jarvis...");
+
       // Initialisation des systèmes
       if (this.brain.initialize) await this.brain.initialize();
       if (this.memory.init) await this.memory.init();
       if (this.learning.initialize) await this.learning.initialize();
-      
+
       // Démarrage du serveur
       this.server.listen(this.config.port, this.config.host, () => {
         this.state.isRunning = true;
         this.state.startTime = Date.now();
-        
-        this.logger.info(`✅ Dashboard démarré sur http://${this.config.host}:${this.config.port}`);
-        this.addLog('info', 'Dashboard Jarvis démarré avec succès');
+
+        this.logger.info(
+          `✅ Dashboard démarré sur http://${this.config.host}:${this.config.port}`,
+        );
+        this.addLog("info", "Dashboard Jarvis démarré avec succès");
       });
-      
+
       // Démarrage des métriques temps réel
       if (this.config.enableRealTimeMetrics) {
         this.startMetricsCollection();
       }
-      
+
       // Création de l'interface web si elle n'existe pas
       await this.createWebInterface();
-      
     } catch (error) {
-      this.logger.error('❌ Erreur lors du démarrage:', error);
+      this.logger.error("❌ Erreur lors du démarrage:", error);
       throw error;
     }
   }
-  
+
   /**
    * Arrêt propre du dashboard
    */
   async shutdown() {
     try {
-      this.logger.info('🔄 Arrêt du dashboard en cours...');
-      
+      this.logger.info("🔄 Arrêt du dashboard en cours...");
+
       this.state.isRunning = false;
-      
+
       // Fermeture des connexions WebSocket
       this.io.close();
-      
+
       // Arrêt des systèmes Jarvis
       await this.brain.shutdown();
       await this.learning.saveState();
-      
+
       // Fermeture du serveur
       this.server.close(() => {
-        this.logger.info('✅ Dashboard arrêté proprement');
+        this.logger.info("✅ Dashboard arrêté proprement");
         process.exit(0);
       });
-      
     } catch (error) {
-      this.logger.error('❌ Erreur lors de l\'arrêt:', error);
+      this.logger.error("❌ Erreur lors de l'arrêt:", error);
       process.exit(1);
     }
   }
-  
+
   /**
    * Démarrage de la collecte de métriques
    */
@@ -460,18 +465,18 @@ class JarvisDashboard {
     setInterval(() => {
       if (this.state.isRunning) {
         const metrics = this.getSystemMetrics();
-        this.broadcastEvent('metrics-update', metrics);
+        this.broadcastEvent("metrics-update", metrics);
       }
     }, this.config.metricsInterval);
   }
-  
+
   /**
    * Collecte des métriques système
    */
   getSystemMetrics() {
     const memUsage = process.memoryUsage();
     const cpuUsage = process.cpuUsage();
-    
+
     return {
       timestamp: Date.now(),
       uptime: Date.now() - (this.state.startTime || Date.now()),
@@ -479,40 +484,45 @@ class JarvisDashboard {
         used: memUsage.heapUsed,
         total: memUsage.heapTotal,
         external: memUsage.external,
-        rss: memUsage.rss
+        rss: memUsage.rss,
       },
       cpu: {
         user: cpuUsage.user,
-        system: cpuUsage.system
+        system: cpuUsage.system,
       },
       connections: this.state.connectedClients,
       requests: this.state.metrics.requests,
       errors: this.state.metrics.errors,
-      averageResponseTime: this.state.metrics.averageResponseTime
+      averageResponseTime: this.state.metrics.averageResponseTime,
     };
   }
-  
+
   /**
    * Logging des requêtes
    */
   logRequest(req, res, duration) {
     this.state.metrics.requests++;
-    
+
     // Mise à jour du temps de réponse moyen
-    this.state.metrics.averageResponseTime = 
-      ((this.state.metrics.averageResponseTime * (this.state.metrics.requests - 1)) + duration) / 
+    this.state.metrics.averageResponseTime =
+      (this.state.metrics.averageResponseTime *
+        (this.state.metrics.requests - 1) +
+        duration) /
       this.state.metrics.requests;
-    
+
     // Comptage des erreurs
     if (res.statusCode >= 400) {
       this.state.metrics.errors++;
     }
-    
+
     // Log détaillé
-    const logLevel = res.statusCode >= 400 ? 'error' : 'info';
-    this.addLog(logLevel, `${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+    const logLevel = res.statusCode >= 400 ? "error" : "info";
+    this.addLog(
+      logLevel,
+      `${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`,
+    );
   }
-  
+
   /**
    * Ajout d'un log
    */
@@ -521,50 +531,50 @@ class JarvisDashboard {
       timestamp: Date.now(),
       level,
       message,
-      metadata
+      metadata,
     };
-    
+
     this.state.logs.push(logEntry);
-    
+
     // Limitation du nombre de logs
     if (this.state.logs.length > this.config.maxLogEntries) {
       this.state.logs = this.state.logs.slice(-this.config.maxLogEntries);
     }
-    
+
     // Diffusion en temps réel
-    this.broadcastEvent('log-entry', logEntry);
+    this.broadcastEvent("log-entry", logEntry);
   }
-  
+
   /**
    * Diffusion d'un événement à tous les clients connectés
    */
   broadcastEvent(event, data) {
     this.io.emit(event, data);
   }
-  
+
   /**
    * Création de l'interface web
    */
   async createWebInterface() {
-    const publicDir = path.join(__dirname, 'public');
-    
+    const publicDir = path.join(__dirname, "public");
+
     try {
       await fs.mkdir(publicDir, { recursive: true });
     } catch (error) {
       // Le répertoire existe déjà
     }
-    
+
     const htmlContent = this.generateDashboardHTML();
     const cssContent = this.generateDashboardCSS();
     const jsContent = this.generateDashboardJS();
-    
+
     await Promise.all([
-      fs.writeFile(path.join(publicDir, 'dashboard.html'), htmlContent),
-      fs.writeFile(path.join(publicDir, 'dashboard.css'), cssContent),
-      fs.writeFile(path.join(publicDir, 'dashboard.js'), jsContent)
+      fs.writeFile(path.join(publicDir, "dashboard.html"), htmlContent),
+      fs.writeFile(path.join(publicDir, "dashboard.css"), cssContent),
+      fs.writeFile(path.join(publicDir, "dashboard.js"), jsContent),
     ]);
   }
-  
+
   /**
    * Génération du HTML du dashboard
    */
@@ -659,7 +669,7 @@ class JarvisDashboard {
 </body>
 </html>`;
   }
-  
+
   /**
    * Génération du CSS du dashboard
    */
@@ -928,7 +938,7 @@ body {
     }
 }`;
   }
-  
+
   /**
    * Génération du JavaScript du dashboard
    */
@@ -1162,9 +1172,8 @@ async function main() {
   try {
     const dashboard = new JarvisDashboard();
     await dashboard.start();
-    
   } catch (error) {
-    console.error('❌ Erreur fatale:', error);
+    console.error("❌ Erreur fatale:", error);
     process.exit(1);
   }
 }
@@ -1175,4 +1184,3 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 export default JarvisDashboard;
-

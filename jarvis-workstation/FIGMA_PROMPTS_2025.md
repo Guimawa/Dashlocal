@@ -9,6 +9,7 @@ Prompts optimisés pour créer des designs cohérents avec le système Jarvis Da
 Crée une page web responsive 1440px. Utilise une grille 12 colonnes avec spacing 24px.
 
 Ajoute une **sidebar verticale à gauche**, fond blanc, radius 16px, avec navigation :
+
 - Dashboard
 - Générer
 - Templates
@@ -18,10 +19,12 @@ Ajoute une **sidebar verticale à gauche**, fond blanc, radius 16px, avec naviga
 - Paramètres
 
 Ajoute un **main content à droite**, avec padding 24px :
+
 - Titre H1
 - Contenu variable selon onglet
 
 **Spécifications :**
+
 - Typo : Inter
 - Couleurs : bleu #2563EB, gris #6B7280, fond clair #F9FAFB, fond sombre #0F172A
 - Radius : 16px
@@ -41,6 +44,7 @@ Crée un écran "Générateur" avec :
 - Bloc résultat : fond gris clair, coin arrondi, affichage code (monospace)
 
 **Spécifications :**
+
 - Disposition : verticale, spacing 16px
 - Typo : Inter
 - Mode : clair/sombre
@@ -57,6 +61,7 @@ Crée un écran "Templates" avec 2 colonnes :
 - Colonne droite : zone "Preview Live" avec cadre blanc, fond gris clair
 
 **Spécifications :**
+
 - Spacing entre colonnes : 32px
 - Textarea hauteur 360px
 - Utilise Auto Layout vertical
@@ -77,6 +82,7 @@ Crée un écran "Mémoire des générations" :
   - Code généré (zone scrollable)
 
 **Spécifications :**
+
 - Cartes : fond blanc, border gris clair, radius 16px, padding 16px
 - Typo : Inter 16px
 - Spacing entre cartes : 24px
@@ -95,6 +101,7 @@ Crée un écran "Tests générés" :
   - Boutons "Relancer", "Copier"
 
 **Spécifications :**
+
 - Utilise des icônes Lucide
 - Couleur OK : vert #22C55E
 - Erreur : rouge #EF4444
@@ -112,10 +119,12 @@ Crée un écran dashboard avec 3 widgets :
 - Projets créés : nombre
 
 Ajoute :
+
 - Liste des projets récents (nom + chemin)
 - Logs récents (date + message)
 
 **Spécifications :**
+
 - Widgets en 3 colonnes, spacing 24
 - Cards avec fond blanc, ombre légère
 - Typo : Inter, taille 18-24px
@@ -133,6 +142,7 @@ Crée une page de paramètres utilisateur :
 - Bouton "Enregistrer"
 
 **Spécifications :**
+
 - Auto Layout vertical, spacing 16
 - Bouton bleu, radius 16
 - Fond page : #F9FAFB
@@ -144,23 +154,27 @@ Crée une page de paramètres utilisateur :
 Crée une bibliothèque de composants réutilisables :
 
 **Button Primary :**
+
 - Fond bleu #2563EB, texte blanc
 - Radius 16px, padding 12px 24px
 - Hover : assombrir de 10%
 - Touch target 44px minimum
 
 **Input/Textarea :**
+
 - Border gris #E5E7EB, radius 8px
 - Padding 12px, typo Inter 16px
 - Focus : border bleu #2563EB
 - Placeholder gris #9CA3AF
 
 **Card :**
+
 - Fond blanc, border gris clair
 - Radius 16px, padding 16px
 - Ombre légère : 0 1px 3px rgba(0,0,0,0.1)
 
 **Status Badge :**
+
 - Success : vert #22C55E
 - Error : rouge #EF4444
 - Warning : orange #F59E0B
@@ -174,6 +188,7 @@ Crée une bibliothèque de composants réutilisables :
 Adapte tous les écrans pour le mode sombre :
 
 **Couleurs sombres :**
+
 - Fond principal : #0F172A
 - Fond secondaire : #1E293B
 - Texte principal : #F8FAFC
@@ -181,6 +196,7 @@ Adapte tous les écrans pour le mode sombre :
 - Border : #334155
 
 **Conserve :**
+
 - Couleurs d'accent (bleu, vert, rouge)
 - Radius et spacing identiques
 - Contrastes AA maintenus
@@ -192,16 +208,19 @@ Adapte tous les écrans pour le mode sombre :
 Adapte le design pour mobile (375px) :
 
 **Sidebar :**
+
 - Devient un menu hamburger
 - Overlay en plein écran
 - Navigation verticale
 
 **Main content :**
+
 - Padding réduit à 16px
 - Colonnes deviennent verticales
 - Widgets en 1 colonne
 
 **Touch targets :**
+
 - Minimum 44px partout
 - Espacement augmenté
 - Boutons plus grands
@@ -213,6 +232,7 @@ Adapte le design pour mobile (375px) :
 Crée un design system complet :
 
 **Couleurs :**
+
 - Primary: #2563EB
 - Secondary: #9333EA
 - Success: #22C55E
@@ -221,6 +241,7 @@ Crée un design system complet :
 - Info: #0EA5E9
 
 **Typographie :**
+
 - H1: Inter 32px, weight 700
 - H2: Inter 24px, weight 600
 - H3: Inter 20px, weight 600
@@ -228,6 +249,7 @@ Crée un design system complet :
 - Caption: Inter 14px, weight 400
 
 **Spacing :**
+
 - xxs: 4px
 - xs: 8px
 - sm: 12px
@@ -237,11 +259,13 @@ Crée un design system complet :
 - xxl: 40px
 
 **Radius :**
+
 - sm: 8px
 - md: 16px
 - lg: 24px
 
 **Shadows :**
+
 - sm: 0 1px 2px rgba(0,0,0,0.05)
 - md: 0 4px 6px rgba(0,0,0,0.1)
 - lg: 0 10px 15px rgba(0,0,0,0.15)

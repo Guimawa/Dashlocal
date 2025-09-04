@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import CodeTabs from './CodeTabs';
-import CodeEditor from './CodeEditor';
-import LivePreview from './LivePreview';
-import { useAppContext } from '../../context/AppContext';
+import CodeTabs from "./CodeTabs";
+import CodeEditor from "./CodeEditor";
+import LivePreview from "./LivePreview";
+import { useAppContext } from "../../context/AppContext";
 
 export default function MainPanel() {
   const { tabs, activeTab, isLoading } = useAppContext();
@@ -14,9 +14,9 @@ export default function MainPanel() {
       <CodeTabs />
       <div className="flex flex-1 overflow-hidden">
         <CodeEditor />
-        <LivePreview code={currentTab?.content || ''} />
+        <LivePreview code={currentTab?.content || ""} />
       </div>
-      
+
       {/* Loading overlay */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -24,8 +24,12 @@ export default function MainPanel() {
             <div className="flex items-center space-x-3">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Generating Code</h3>
-                <p className="text-sm text-gray-600">Please wait while AI creates your code...</p>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Generating Code
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Please wait while AI creates your code...
+                </p>
               </div>
             </div>
           </div>

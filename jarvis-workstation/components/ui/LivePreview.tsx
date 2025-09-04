@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Sandpack } from '@codesandbox/sandpack-react';
-import { useState } from 'react';
-import { RefreshCw, Maximize2, Minimize2, ExternalLink } from 'lucide-react';
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { useState } from "react";
+import { RefreshCw, Maximize2, Minimize2, ExternalLink } from "lucide-react";
 
 interface LivePreviewProps {
   code: string;
@@ -13,7 +13,7 @@ export default function LivePreview({ code }: LivePreviewProps) {
   const [key, setKey] = useState(0);
 
   const handleRefresh = () => {
-    setKey(prev => prev + 1);
+    setKey((prev) => prev + 1);
   };
 
   const toggleFullscreen = () => {
@@ -21,7 +21,7 @@ export default function LivePreview({ code }: LivePreviewProps) {
   };
 
   const openInNewTab = () => {
-    const newWindow = window.open('', '_blank');
+    const newWindow = window.open("", "_blank");
     if (newWindow) {
       newWindow.document.write(`
         <!DOCTYPE html>
@@ -49,14 +49,18 @@ export default function LivePreview({ code }: LivePreviewProps) {
   };
 
   return (
-    <div className={`flex flex-col ${isFullscreen ? 'fixed inset-0 z-50' : 'w-1/2'} bg-white`}>
+    <div
+      className={`flex flex-col ${isFullscreen ? "fixed inset-0 z-50" : "w-1/2"} bg-white`}
+    >
       {/* Preview header */}
       <div className="flex items-center justify-between p-3 border-b bg-gray-50">
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-700">Live Preview</span>
+          <span className="text-sm font-medium text-gray-700">
+            Live Preview
+          </span>
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <button
             onClick={handleRefresh}
@@ -92,7 +96,9 @@ export default function LivePreview({ code }: LivePreviewProps) {
           key={key}
           template="react"
           files={{
-            '/App.js': code || `import React from 'react';
+            "/App.js":
+              code ||
+              `import React from 'react';
 
 export default function App() {
   return (
@@ -104,8 +110,8 @@ export default function App() {
 }`,
           }}
           options={{
-            visibleFiles: ['/App.js'],
-            activeFile: '/App.js',
+            visibleFiles: ["/App.js"],
+            activeFile: "/App.js",
             showLineNumbers: true,
             showInlineErrors: true,
             wrapContent: true,
@@ -114,15 +120,15 @@ export default function App() {
             showTabs: false,
             showConsole: true,
             showConsoleButton: true,
-            editorHeight: '100%',
+            editorHeight: "100%",
             editorWidthPercentage: 0,
-            previewHeight: '100%',
+            previewHeight: "100%",
           }}
           theme="light"
           customSetup={{
             dependencies: {
-              'react': '^18.0.0',
-              'react-dom': '^18.0.0',
+              react: "^18.0.0",
+              "react-dom": "^18.0.0",
             },
           }}
         />

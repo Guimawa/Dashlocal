@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import FeedbackItem from '@/components/ui/FeedbackItem';
+import { useEffect, useState } from "react";
+import FeedbackItem from "@/components/ui/FeedbackItem";
 
 export default function LearningScreen() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/learning')
+    fetch("/api/learning")
       .then((res) => res.json())
       .then((data) => {
         setFeedbacks(data || []);

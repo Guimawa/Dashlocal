@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAppContext } from '../../context/AppContext';
-import { Plus, X, Edit2, Check, X as XIcon } from 'lucide-react';
+import { useState } from "react";
+import { useAppContext } from "../../context/AppContext";
+import { Plus, X, Edit2, Check, X as XIcon } from "lucide-react";
 
 export default function CodeTabs() {
-  const { tabs, activeTab, setActiveTab, addTab, closeTab, renameTab } = useAppContext();
+  const { tabs, activeTab, setActiveTab, addTab, closeTab, renameTab } =
+    useAppContext();
   const [editingTab, setEditingTab] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [editValue, setEditValue] = useState("");
 
   const handleAddTab = () => {
     addTab();
@@ -29,18 +30,18 @@ export default function CodeTabs() {
       renameTab(editingTab, editValue.trim());
     }
     setEditingTab(null);
-    setEditValue('');
+    setEditValue("");
   };
 
   const handleRenameCancel = () => {
     setEditingTab(null);
-    setEditValue('');
+    setEditValue("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleRenameConfirm();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       handleRenameCancel();
     }
   };
@@ -55,8 +56,8 @@ export default function CodeTabs() {
               key={tab.id}
               className={`flex items-center min-w-0 group ${
                 activeTab === tab.id
-                  ? 'bg-white border-b-2 border-primary'
-                  : 'bg-gray-100 hover:bg-gray-200'
+                  ? "bg-white border-b-2 border-primary"
+                  : "bg-gray-100 hover:bg-gray-200"
               }`}
             >
               <div
@@ -84,7 +85,7 @@ export default function CodeTabs() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex items-center space-x-1 px-2">
                 {editingTab === tab.id ? (
                   <>
@@ -121,7 +122,7 @@ export default function CodeTabs() {
             </div>
           ))}
         </div>
-        
+
         {/* Add tab button */}
         <button
           onClick={handleAddTab}

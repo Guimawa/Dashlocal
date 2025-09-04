@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import * as ReactDOMClient from 'react-dom/client';
+import { useEffect, useRef } from "react";
+import * as ReactDOMClient from "react-dom/client";
 
 export default function LivePreview({ component }) {
   const previewRef = useRef(null);
@@ -17,13 +17,13 @@ export default function LivePreview({ component }) {
         root.render(React.createElement(Hello));
       `;
 
-      const blob = new Blob([code], { type: 'text/javascript' });
+      const blob = new Blob([code], { type: "text/javascript" });
       const url = URL.createObjectURL(blob);
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = url;
-      script.type = 'module';
+      script.type = "module";
       script.onload = () => URL.revokeObjectURL(url);
-      previewRef.current.innerHTML = '';
+      previewRef.current.innerHTML = "";
       previewRef.current.appendChild(script);
     } catch (err) {
       previewRef.current.innerHTML = `<pre class="text-red-600">${err.toString()}</pre>`;

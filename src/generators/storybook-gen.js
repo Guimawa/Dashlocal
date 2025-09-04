@@ -7,10 +7,10 @@
 // avec controls, actions, docs et variantes automatiques
 // ==============================================
 
-import fs from 'fs/promises';
-import path from 'path';
-import Logger from '../core/logger.js';
-import CodeFormatter from '../utils/formatters.js';
+import fs from "fs/promises";
+import path from "path";
+import Logger from "../core/logger.js";
+import CodeFormatter from "../utils/formatters.js";
 
 /**
  * Générateur de stories Storybook avec IA
@@ -19,69 +19,74 @@ export default class StorybookGenerator {
   constructor(groqClient, memorySystem) {
     this.groqClient = groqClient;
     this.memory = memorySystem;
-    this.logger = new Logger('StorybookGenerator');
-    
+    this.logger = new Logger("StorybookGenerator");
+
     // Configuration par défaut
     this.defaultConfig = {
-      version: '7.0', // Version de Storybook
+      version: "7.0", // Version de Storybook
       addons: [
-        '@storybook/addon-essentials',
-        '@storybook/addon-controls',
-        '@storybook/addon-actions',
-        '@storybook/addon-docs',
-        '@storybook/addon-a11y'
+        "@storybook/addon-essentials",
+        "@storybook/addon-controls",
+        "@storybook/addon-actions",
+        "@storybook/addon-docs",
+        "@storybook/addon-a11y",
       ],
       generateVariants: true,
       generateDocs: true,
       generateControls: true,
       generateActions: true,
-      includeAccessibility: true
+      includeAccessibility: true,
     };
-    
+
     // Templates de stories
     this.storyTemplates = {
-      basic: 'basic-story.template',
-      advanced: 'advanced-story.template',
-      interactive: 'interactive-story.template'
+      basic: "basic-story.template",
+      advanced: "advanced-story.template",
+      interactive: "interactive-story.template",
     };
   }
-  
+
   /**
    * Génération principale d'une story Storybook
    */
   async generateStory(componentSpec, componentCode, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
-      this.logger.info(`📚 Génération de la story Storybook: ${componentSpec.name}`);
-      
+
+      this.logger.info(
+        `📚 Génération de la story Storybook: ${componentSpec.name}`,
+      );
+
       // Analyse du composant pour extraire les props
-      const componentAnalysis = await this.analyzeComponent(componentCode, componentSpec);
-      
+      const componentAnalysis = await this.analyzeComponent(
+        componentCode,
+        componentSpec,
+      );
+
       // Génération des variantes de story
-      const variants = config.generateVariants 
+      const variants = config.generateVariants
         ? await this.generateStoryVariants(componentSpec, componentAnalysis)
-        : ['Default'];
-      
+        : ["Default"];
+
       // Génération du code de la story
       const storyCode = await this.generateStoryCode(
-        componentSpec, 
-        componentAnalysis, 
-        variants, 
-        config
+        componentSpec,
+        componentAnalysis,
+        variants,
+        config,
       );
-      
+
       // Formatage du code
-      const formattedCode = await formatCode(storyCode, 'javascript');
-      
+      const formattedCode = await formatCode(storyCode, "javascript");
+
       // Génération de la documentation
-      const docs = config.generateDocs 
+      const docs = config.generateDocs
         ? await this.generateStoryDocs(componentSpec, componentAnalysis)
         : null;
-      
+
       // Sauvegarde en mémoire
       await this.saveToMemory(componentSpec, formattedCode, componentAnalysis);
-      
+
       const result = {
         success: true,
         story: {
@@ -89,75 +94,83 @@ export default class StorybookGenerator {
           code: formattedCode,
           variants,
           docs,
-          analysis: componentAnalysis
+          analysis: componentAnalysis,
         },
         metadata: {
           timestamp: Date.now(),
           config,
-          addons: config.addons
-        }
+          addons: config.addons,
+        },
       };
-      
+
       this.logger.info(`✅ Story ${componentSpec.name} générée avec succès`);
-      
+
       return result;
-      
     } catch (error) {
-      this.logger.error(`❌ Erreur génération story ${componentSpec.name}:`, error);
+      this.logger.error(
+        `❌ Erreur génération story ${componentSpec.name}:`,
+        error,
+      );
       return {
         success: false,
         error: error.message,
-        story: null
+        story: null,
       };
     }
   }
-  
+
   /**
    * Génération de configuration Storybook
    */
   async generateStorybookConfig(projectPath, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
-      this.logger.info('⚙️ Génération de la configuration Storybook...');
-      
+
+      this.logger.info("⚙️ Génération de la configuration Storybook...");
+
       // Génération du fichier main.js
       const mainConfig = await this.generateMainConfig(config);
-      
+
       // Génération du fichier preview.js
       const previewConfig = await this.generatePreviewConfig(config);
-      
+
       // Génération du fichier manager.js (optionnel)
       const managerConfig = await this.generateManagerConfig(config);
-      
+
       // Écriture des fichiers de configuration
-      const storybookDir = path.join(projectPath, '.storybook');
+      const storybookDir = path.join(projectPath, ".storybook");
       await fs.mkdir(storybookDir, { recursive: true });
-      
-      await fs.writeFile(path.join(storybookDir, 'main.js'), mainConfig);
-      await fs.writeFile(path.join(storybookDir, 'preview.js'), previewConfig);
-      
+
+      await fs.writeFile(path.join(storybookDir, "main.js"), mainConfig);
+      await fs.writeFile(path.join(storybookDir, "preview.js"), previewConfig);
+
       if (managerConfig) {
-        await fs.writeFile(path.join(storybookDir, 'manager.js'), managerConfig);
+        await fs.writeFile(
+          path.join(storybookDir, "manager.js"),
+          managerConfig,
+        );
       }
-      
-      this.logger.info('✅ Configuration Storybook générée');
-      
+
+      this.logger.info("✅ Configuration Storybook générée");
+
       return {
         success: true,
         configPath: storybookDir,
-        files: ['main.js', 'preview.js', managerConfig ? 'manager.js' : null].filter(Boolean)
+        files: [
+          "main.js",
+          "preview.js",
+          managerConfig ? "manager.js" : null,
+        ].filter(Boolean),
       };
-      
     } catch (error) {
-      this.logger.error('❌ Erreur génération config Storybook:', error);
+      this.logger.error("❌ Erreur génération config Storybook:", error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Analyse du composant pour extraire les informations
    */
@@ -183,11 +196,11 @@ Extrais et analyse:
 
 Retourne un JSON structuré avec ces informations.
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Génération des variantes de story
    */
@@ -209,20 +222,20 @@ Génère des variantes qui montrent:
 
 Retourne un tableau de noms de variantes descriptifs.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'story-variants',
+      type: "story-variants",
       name: `${componentSpec.name}Variants`,
-      prompt
+      prompt,
     });
-    
+
     try {
       return JSON.parse(response.code);
     } catch {
-      return ['Default', 'WithProps', 'Interactive', 'Loading', 'Error'];
+      return ["Default", "WithProps", "Interactive", "Loading", "Error"];
     }
   }
-  
+
   /**
    * Génération du code de la story
    */
@@ -256,19 +269,22 @@ Utilise la syntaxe Storybook ${config.version} (Component Story Format 3.0).
 
 Retourne uniquement le code de la story.
 `;
-    
-    const response = await this.groqClient.generateCode({
-      type: 'storybook-story',
-      name: `${componentSpec.name}.stories.js`,
-      prompt
-    }, {
-      temperature: 0.6,
-      maxTokens: 2048
-    });
-    
+
+    const response = await this.groqClient.generateCode(
+      {
+        type: "storybook-story",
+        name: `${componentSpec.name}.stories.js`,
+        prompt,
+      },
+      {
+        temperature: 0.6,
+        maxTokens: 2048,
+      },
+    );
+
     return response.code;
   }
-  
+
   /**
    * Génération de la documentation de story
    */
@@ -292,16 +308,16 @@ Format: MDX (Markdown + JSX)
 
 Retourne uniquement le contenu MDX.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'storybook-docs',
+      type: "storybook-docs",
       name: `${componentSpec.name}.stories.mdx`,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Génération du fichier main.js
    */
@@ -313,7 +329,7 @@ module.exports = {
   ],
   
   addons: [
-    ${config.addons.map(addon => `'${addon}'`).join(',\n    ')}
+    ${config.addons.map((addon) => `'${addon}'`).join(",\n    ")}
   ],
   
   framework: {
@@ -327,7 +343,7 @@ module.exports = {
   },
   
   docs: {
-    autodocs: ${config.generateDocs ? 'true' : 'false'}
+    autodocs: ${config.generateDocs ? "true" : "false"}
   },
   
   typescript: {
@@ -345,10 +361,10 @@ module.exports = {
   }
 };
 `;
-    
-    return await formatCode(mainConfig, 'javascript');
+
+    return await formatCode(mainConfig, "javascript");
   }
-  
+
   /**
    * Génération du fichier preview.js
    */
@@ -380,14 +396,18 @@ export const parameters = {
     },
   },
   
-  ${config.includeAccessibility ? `
+  ${
+    config.includeAccessibility
+      ? `
   a11y: {
     element: '#root',
     config: {},
     options: {},
     manual: true,
   },
-  ` : ''}
+  `
+      : ""
+  }
   
   backgrounds: {
     default: 'light',
@@ -448,16 +468,16 @@ export const argTypes = {
   // Configuration globale des controls
 };
 `;
-    
-    return await formatCode(previewConfig, 'javascript');
+
+    return await formatCode(previewConfig, "javascript");
   }
-  
+
   /**
    * Génération du fichier manager.js (optionnel)
    */
   async generateManagerConfig(config) {
     if (!config.customManager) return null;
-    
+
     const managerConfig = `
 import { addons } from '@storybook/addons';
 import { themes } from '@storybook/theming';
@@ -471,41 +491,49 @@ addons.setConfig({
   showToolbar: true,
 });
 `;
-    
-    return await formatCode(managerConfig, 'javascript');
+
+    return await formatCode(managerConfig, "javascript");
   }
-  
+
   /**
    * Génération de stories pour plusieurs composants
    */
   async generateMultipleStories(components, options = {}) {
     const results = [];
-    
+
     for (const component of components) {
       try {
         const result = await this.generateStory(
           component.spec,
           component.code,
-          options
+          options,
         );
         results.push(result);
       } catch (error) {
-        this.logger.error(`❌ Erreur génération story ${component.spec.name}:`, error);
+        this.logger.error(
+          `❌ Erreur génération story ${component.spec.name}:`,
+          error,
+        );
         results.push({
           success: false,
           error: error.message,
-          component: component.spec.name
+          component: component.spec.name,
         });
       }
     }
-    
+
     return results;
   }
-  
+
   /**
    * Génération d'une story interactive avec contrôles avancés
    */
-  async generateInteractiveStory(componentSpec, componentCode, interactions, options = {}) {
+  async generateInteractiveStory(
+    componentSpec,
+    componentCode,
+    interactions,
+    options = {},
+  ) {
     const prompt = `
 Génère une story Storybook interactive avec des contrôles avancés:
 
@@ -525,16 +553,16 @@ Utilise @storybook/addon-interactions pour les tests d'interaction.
 
 Retourne uniquement le code de la story interactive.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'interactive-story',
+      type: "interactive-story",
       name: `${componentSpec.name}.interactive.stories.js`,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Sauvegarde en mémoire
    */
@@ -542,61 +570,65 @@ Retourne uniquement le code de la story interactive.
     if (!this.memory.isInitialized) {
       return;
     }
-    
+
     await this.memory.recordGeneration({
-      type: 'storybook-story',
+      type: "storybook-story",
       name: componentSpec.name,
       code: storyCode,
       analysis,
-      domain: 'storybook',
+      domain: "storybook",
       timestamp: Date.now(),
       success: true,
-      quality: 0.9 // Les stories sont généralement de bonne qualité
+      quality: 0.9, // Les stories sont généralement de bonne qualité
     });
   }
-  
+
   /**
    * Écriture des fichiers de story
    */
   async writeStoryFiles(storyResult, outputDir) {
     try {
       // Création du répertoire des stories
-      const storiesDir = path.join(outputDir, 'stories');
+      const storiesDir = path.join(outputDir, "stories");
       await fs.mkdir(storiesDir, { recursive: true });
-      
+
       // Écriture du fichier de story principal
       const storyFile = `${storyResult.story.name}.stories.js`;
       await fs.writeFile(
         path.join(storiesDir, storyFile),
-        storyResult.story.code
+        storyResult.story.code,
       );
-      
+
       // Écriture de la documentation si présente
       if (storyResult.story.docs) {
         const docsFile = `${storyResult.story.name}.stories.mdx`;
         await fs.writeFile(
           path.join(storiesDir, docsFile),
-          storyResult.story.docs
+          storyResult.story.docs,
         );
       }
-      
+
       this.logger.info(`📁 Stories écrites dans: ${storiesDir}`);
-      
+
       return {
         success: true,
         path: storiesDir,
-        files: [storyFile, storyResult.story.docs ? `${storyResult.story.name}.stories.mdx` : null].filter(Boolean)
+        files: [
+          storyFile,
+          storyResult.story.docs
+            ? `${storyResult.story.name}.stories.mdx`
+            : null,
+        ].filter(Boolean),
       };
-      
     } catch (error) {
-      this.logger.error('❌ Erreur écriture stories:', error);
+      this.logger.error("❌ Erreur écriture stories:", error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Validation d'une story Storybook
    */
@@ -605,36 +637,36 @@ Retourne uniquement le code de la story interactive.
     const checks = [
       {
         test: /export default.*{/,
-        message: 'Export par défaut avec metadata présent'
+        message: "Export par défaut avec metadata présent",
       },
       {
         test: /export const \w+/,
-        message: 'Au moins une story exportée'
+        message: "Au moins une story exportée",
       },
       {
         test: /args:|argTypes:/,
-        message: 'Configuration des arguments présente'
-      }
+        message: "Configuration des arguments présente",
+      },
     ];
-    
+
     const issues = [];
-    
+
     for (const check of checks) {
       if (!check.test.test(storyCode)) {
         issues.push({
-          type: 'warning',
-          message: `Manquant: ${check.message}`
+          type: "warning",
+          message: `Manquant: ${check.message}`,
         });
       }
     }
-    
+
     return {
       isValid: issues.length === 0,
       issues,
-      score: Math.max(0, 100 - (issues.length * 20))
+      score: Math.max(0, 100 - issues.length * 20),
     };
   }
-  
+
   /**
    * Obtention des statistiques du générateur
    */
@@ -642,17 +674,22 @@ Retourne uniquement le code de la story interactive.
     if (!this.memory.isInitialized) {
       return { stories: 0, components: 0 };
     }
-    
-    const storybookGenerations = await this.memory.search('', { 
-      type: 'generation', 
-      tags: ['storybook'] 
+
+    const storybookGenerations = await this.memory.search("", {
+      type: "generation",
+      tags: ["storybook"],
     });
-    
+
     return {
       totalStories: storybookGenerations.length,
-      componentsWithStories: new Set(storybookGenerations.map(g => g.data.name)).size,
-      averageQuality: storybookGenerations.reduce((sum, g) => sum + (g.data.quality || 0), 0) / storybookGenerations.length || 0
+      componentsWithStories: new Set(
+        storybookGenerations.map((g) => g.data.name),
+      ).size,
+      averageQuality:
+        storybookGenerations.reduce(
+          (sum, g) => sum + (g.data.quality || 0),
+          0,
+        ) / storybookGenerations.length || 0,
     };
   }
 }
-
