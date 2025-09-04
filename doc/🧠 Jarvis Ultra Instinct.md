@@ -9,12 +9,14 @@
 ## ✨ Fonctionnalités Ultra Instinct
 
 ### 🧠 Intelligence Artificielle Avancée
+
 - **Cerveau IA** : Système d'intelligence centrale avec modes adaptatifs
 - **Apprentissage automatique** : Amélioration continue basée sur l'expérience
 - **Mémoire persistante** : Stockage et récupération intelligente des patterns
 - **Analyse contextuelle** : Compréhension profonde des projets
 
 ### ⚡ Générateurs Intelligents
+
 - **React/Next.js** : Composants, hooks, contextes avec TypeScript
 - **Storybook** : Stories automatiques avec contrôles et documentation
 - **Tests** : Jest + Testing Library avec couverture complète
@@ -23,12 +25,14 @@
 - **Documentation** : Markdown/HTML/PDF automatique
 
 ### 📊 Dashboard de Monitoring
+
 - **Métriques temps réel** : Performance et utilisation
 - **Visualisation** : Graphiques et statistiques d'apprentissage
 - **Logs avancés** : Système de logging multi-niveaux
 - **Configuration** : Interface de gestion des paramètres
 
 ### 🛠️ Outils Avancés
+
 - **Formatage intelligent** : Multi-langages avec optimisations
 - **Validation** : Code, performance, sécurité, accessibilité
 - **Client Groq** : Intégration IA avec retry et cache
@@ -118,6 +122,7 @@ node jarvis-dashboard.js
 ```
 
 Accédez à `http://localhost:3000` pour :
+
 - Monitorer les performances en temps réel
 - Visualiser les métriques d'apprentissage
 - Gérer la configuration
@@ -127,9 +132,9 @@ Accédez à `http://localhost:3000` pour :
 ### API Programmatique
 
 ```javascript
-import JarvisBrain from './src/core/brain.js';
-import ReactGenerator from './src/generators/react-gen.js';
-import MemorySystem from './src/core/memory.js';
+import JarvisBrain from "./src/core/brain.js";
+import ReactGenerator from "./src/generators/react-gen.js";
+import MemorySystem from "./src/core/memory.js";
 
 // Initialisation
 const brain = new JarvisBrain();
@@ -140,15 +145,18 @@ await brain.initialize();
 await memory.initialize();
 
 // Génération d'un composant
-const result = await reactGen.generateComponent({
-  name: 'MyComponent',
-  type: 'component',
-  description: 'Un composant exemple'
-}, {
-  typescript: true,
-  storybook: true,
-  tests: true
-});
+const result = await reactGen.generateComponent(
+  {
+    name: "MyComponent",
+    type: "component",
+    description: "Un composant exemple",
+  },
+  {
+    typescript: true,
+    storybook: true,
+    tests: true,
+  },
+);
 
 console.log(result);
 ```
@@ -220,16 +228,19 @@ Génération intelligente de composants React :
 
 ```javascript
 // Composant fonctionnel avec hooks
-const result = await reactGen.generateComponent({
-  name: 'UserProfile',
-  type: 'component',
-  description: 'Profil utilisateur avec avatar et informations'
-}, {
-  typescript: true,
-  styling: 'tailwind',
-  accessibility: true,
-  responsive: true
-});
+const result = await reactGen.generateComponent(
+  {
+    name: "UserProfile",
+    type: "component",
+    description: "Profil utilisateur avec avatar et informations",
+  },
+  {
+    typescript: true,
+    styling: "tailwind",
+    accessibility: true,
+    responsive: true,
+  },
+);
 ```
 
 ### Storybook Generator
@@ -242,7 +253,7 @@ const story = await storybookGen.generateStory(componentSpec, componentCode, {
   generateVariants: true,
   generateControls: true,
   generateDocs: true,
-  includeAccessibility: true
+  includeAccessibility: true,
 });
 ```
 
@@ -256,7 +267,7 @@ const tests = await testGen.generateTests(spec, sourceCode, {
   coverage: true,
   accessibility: true,
   integration: true,
-  performance: true
+  performance: true,
 });
 ```
 
@@ -272,14 +283,14 @@ const tests = await testGen.generateTests(spec, sourceCode, {
 ### Logging Avancé
 
 ```javascript
-import Logger from './src/utils/logger.js';
+import Logger from "./src/utils/logger.js";
 
-const logger = new Logger('MonModule');
+const logger = new Logger("MonModule");
 
-logger.info('Information générale');
-logger.warn('Avertissement', { context: 'data' });
-logger.error('Erreur critique', { error: errorObject });
-logger.debug('Debug détaillé', { trace: true });
+logger.info("Information générale");
+logger.warn("Avertissement", { context: "data" });
+logger.error("Erreur critique", { error: errorObject });
+logger.debug("Debug détaillé", { trace: true });
 ```
 
 ## 🔧 Développement
@@ -386,6 +397,7 @@ CMD ["npm", "start"]
 ### v2.0.0 - Ultra Instinct (2024)
 
 #### 🆕 Nouvelles fonctionnalités
+
 - **Intelligence artificielle avancée** avec apprentissage automatique
 - **Dashboard de monitoring** temps réel
 - **Générateurs étendus** : API, BDD, documentation
@@ -394,12 +406,14 @@ CMD ["npm", "start"]
 - **Configuration flexible** avec hot-reload
 
 #### 🔄 Améliorations
+
 - **Performance** : Cache intelligent, optimisations
 - **Stabilité** : Gestion d'erreurs robuste, retry automatique
 - **UX** : Interface CLI améliorée, feedback détaillé
 - **Documentation** : Guide complet, exemples pratiques
 
 #### 🐛 Corrections
+
 - Gestion des erreurs réseau
 - Formatage de code edge cases
 - Compatibilité Node.js 18+
@@ -421,6 +435,7 @@ CMD ["npm", "start"]
 ### Support Commercial
 
 Pour un support professionnel ou des fonctionnalités sur mesure :
+
 - **Email** : support@jarvis-expert.com
 - **Consulting** : Accompagnement personnalisé
 - **Formation** : Sessions de formation équipe
@@ -443,9 +458,8 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 **Fait avec ❤️ par l'équipe Jarvis Expert**
 
-[🌟 Star sur GitHub](https://github.com/jarvis-expert/jarvis-ultra-instinct) • 
-[🐛 Reporter un bug](https://github.com/jarvis-expert/jarvis-ultra-instinct/issues) • 
+[🌟 Star sur GitHub](https://github.com/jarvis-expert/jarvis-ultra-instinct) •
+[🐛 Reporter un bug](https://github.com/jarvis-expert/jarvis-ultra-instinct/issues) •
 [💡 Demander une fonctionnalité](https://github.com/jarvis-expert/jarvis-ultra-instinct/discussions)
 
 </div>
-

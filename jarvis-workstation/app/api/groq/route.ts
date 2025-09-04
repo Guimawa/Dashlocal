@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import Groq from 'groq-sdk';
+import { NextResponse } from "next/server";
+import Groq from "groq-sdk";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -10,13 +10,16 @@ export async function POST(request: Request) {
     const { prompt } = await request.json();
 
     if (!prompt) {
-      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Prompt is required" },
+        { status: 400 },
+      );
     }
 
     if (!process.env.GROQ_API_KEY) {
       return NextResponse.json(
-        { error: 'GROQ_API_KEY is not configured' },
-        { status: 500 }
+        { error: "GROQ_API_KEY is not configured" },
+        { status: 500 },
       );
     }
 
@@ -36,7 +39,7 @@ export async function POST(request: Request) {
           - Include proper error handling
           - Make components reusable and modular
           
-          Return only the code, no explanations unless specifically asked.`
+          Return only the code, no explanations unless specifically asked.`,
         },
         {
           role: "user",
@@ -48,21 +51,21 @@ export async function POST(request: Request) {
       max_tokens: 2048,
     });
 
-    const code = response.choices[0]?.message?.content || '';
-    
-    return NextResponse.json({ 
+    const code = response.choices[0]?.message?.content || "";
+
+    return NextResponse.json({
       code,
       usage: response.usage,
-      model: response.model 
+      model: response.model,
     });
   } catch (error) {
-    console.error('Error calling Groq API:', error);
+    console.error("Error calling Groq API:", error);
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch from Groq API', 
-        details: error instanceof Error ? error.message : String(error) 
+      {
+        error: "Failed to fetch from Groq API",
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import MemoryItem from '@/components/ui/MemoryItem';
+import { useEffect, useState } from "react";
+import MemoryItem from "@/components/ui/MemoryItem";
 
 export default function MemoryScreen() {
   const [history, setHistory] = useState([]);
@@ -10,11 +10,11 @@ export default function MemoryScreen() {
   useEffect(() => {
     const fetchMemory = async () => {
       try {
-        const res = await fetch('/api/memory');
+        const res = await fetch("/api/memory");
         const data = await res.json();
         setHistory(data || []);
       } catch (err) {
-        console.error('Erreur mémoire', err);
+        console.error("Erreur mémoire", err);
       } finally {
         setLoading(false);
       }

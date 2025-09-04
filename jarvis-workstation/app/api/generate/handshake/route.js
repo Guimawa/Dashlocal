@@ -1,29 +1,38 @@
 // app/api/generate/handshake/route.js
-import { saveToMemory } from '@/src/core/memory.js';
+import { saveToMemory } from "@/src/core/memory.js";
 
 export async function POST(request) {
   try {
     const { prompt, config = {} } = await request.json();
-    
+
     // Générer un projet basé sur handshake-react-pure
-    const projectName = config.name || 'handshake-custom';
-    const projectType = config.type || 'dashboard';
-    
+    const projectName = config.name || "handshake-custom";
+    const projectType = config.type || "dashboard";
+
     // Template de base handshake
     const handshakeTemplate = {
       name: projectName,
       type: projectType,
       description: `Projet généré par Jarvis basé sur handshake-react-pure: ${prompt}`,
-      tech: ['React 19.1.1', 'TypeScript', 'Tailwind CSS 4.1.12', 'Recharts', 'Lucide React'],
+      tech: [
+        "React 19.1.1",
+        "TypeScript",
+        "Tailwind CSS 4.1.12",
+        "Recharts",
+        "Lucide React",
+      ],
       files: {
-        'package.json': generatePackageJson(projectName),
-        'tailwind.config.js': generateTailwindConfig(),
-        'src/App.tsx': generateAppTsx(projectName),
-        'src/components/Dashboard.tsx': generateDashboardComponent(prompt, config),
-        'src/index.css': generateIndexCss()
+        "package.json": generatePackageJson(projectName),
+        "tailwind.config.js": generateTailwindConfig(),
+        "src/App.tsx": generateAppTsx(projectName),
+        "src/components/Dashboard.tsx": generateDashboardComponent(
+          prompt,
+          config,
+        ),
+        "src/index.css": generateIndexCss(),
       },
       preview: `/projects/${projectName}/preview`,
-      source: `/projects/${projectName}/source`
+      source: `/projects/${projectName}/source`,
     };
 
     // Sauvegarder dans la mémoire
@@ -31,23 +40,25 @@ export async function POST(request) {
       prompt: prompt,
       code: JSON.stringify(handshakeTemplate, null, 2),
       title: `Projet Handshake généré - ${projectName}`,
-      type: 'project'
+      type: "project",
     });
 
     return Response.json({
       success: true,
       project: handshakeTemplate,
-      message: `Projet ${projectName} généré avec succès basé sur handshake-react-pure`
+      message: `Projet ${projectName} généré avec succès basé sur handshake-react-pure`,
     });
-
   } catch (error) {
-    console.error('[API Error]', error);
-    return new Response(JSON.stringify({
-      error: 'Erreur génération projet handshake',
-      details: error.message
-    }), {
-      status: 500,
-    });
+    console.error("[API Error]", error);
+    return new Response(
+      JSON.stringify({
+        error: "Erreur génération projet handshake",
+        details: error.message,
+      }),
+      {
+        status: 500,
+      },
+    );
   }
 }
 

@@ -7,11 +7,11 @@
 // avec hooks, TypeScript, Storybook et tests automatiques
 // ==============================================
 
-import fs from 'fs/promises';
-import path from 'path';
-import Logger from '../core/logger.js';
-import CodeFormatter from '../utils/formatters.js';
-import CodeValidator from '../utils/validators.js';
+import fs from "fs/promises";
+import path from "path";
+import Logger from "../core/logger.js";
+import CodeFormatter from "../utils/formatters.js";
+import CodeValidator from "../utils/validators.js";
 
 /**
  * Générateur de composants React avec IA
@@ -20,67 +20,77 @@ export default class ReactGenerator {
   constructor(groqClient, memorySystem) {
     this.groqClient = groqClient;
     this.memory = memorySystem;
-    this.logger = new Logger('ReactGenerator');
-    
+    this.logger = new Logger("ReactGenerator");
+
     // Templates de base
     this.templates = {
       component: {
-        functional: 'functional-component.template',
-        class: 'class-component.template',
-        hook: 'custom-hook.template'
+        functional: "functional-component.template",
+        class: "class-component.template",
+        hook: "custom-hook.template",
       },
       styles: {
-        css: 'component.css.template',
-        scss: 'component.scss.template',
-        styled: 'styled-component.template',
-        tailwind: 'tailwind-component.template'
-      }
+        css: "component.css.template",
+        scss: "component.scss.template",
+        styled: "styled-component.template",
+        tailwind: "tailwind-component.template",
+      },
     };
-    
+
     // Configuration par défaut
     this.defaultConfig = {
       typescript: false,
       storybook: true,
       tests: true,
-      styling: 'tailwind',
+      styling: "tailwind",
       hooks: true,
       proptypes: false,
       accessibility: true,
-      responsive: true
+      responsive: true,
     };
   }
-  
+
   /**
    * Génération principale d'un composant React
    */
   async generateComponent(spec, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
+
       this.logger.info(`⚛️ Génération du composant React: ${spec.name}`);
-      
+
       // Analyse de la spécification avec l'IA
       const analysis = await this.analyzeComponentSpec(spec, config);
-      
+
       // Recherche de composants similaires en mémoire
       const similarComponents = await this.findSimilarComponents(spec);
-      
+
       // Génération du code avec l'IA
-      const componentCode = await this.generateComponentCode(spec, analysis, config);
-      
+      const componentCode = await this.generateComponentCode(
+        spec,
+        analysis,
+        config,
+      );
+
       // Validation du code généré
       const validation = await this.validator.validateCode(componentCode);
-      
+
       // Formatage du code
       const formatResult = await this.formatter.formatCode(componentCode);
-      const formattedCode = formatResult.success ? formatResult.code : componentCode;
-      
+      const formattedCode = formatResult.success
+        ? formatResult.code
+        : componentCode;
+
       // Génération des fichiers associés
-      const files = await this.generateAssociatedFiles(spec, formattedCode, config);
-      
+      const files = await this.generateAssociatedFiles(
+        spec,
+        formattedCode,
+        config,
+      );
+
       // Sauvegarde en mémoire
       await this.saveToMemory(spec, formattedCode, analysis, validation);
-      
+
       const result = {
         success: true,
         component: {
@@ -88,55 +98,56 @@ export default class ReactGenerator {
           code: formattedCode,
           files,
           validation,
-          analysis
+          analysis,
         },
         metadata: {
           timestamp: Date.now(),
           config,
-          similarComponents: similarComponents.length
-        }
+          similarComponents: similarComponents.length,
+        },
       };
-      
+
       this.logger.info(`✅ Composant ${spec.name} généré avec succès`);
-      
+
       return result;
-      
     } catch (error) {
       this.logger.error(`❌ Erreur génération composant ${spec.name}:`, error);
       return {
         success: false,
         error: error.message,
-        component: null
+        component: null,
       };
     }
   }
-  
+
   /**
    * Génération d'un hook personnalisé
    */
   async generateHook(spec, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
+
       this.logger.info(`🪝 Génération du hook: ${spec.name}`);
-      
+
       // Analyse de la spécification
       const analysis = await this.analyzeHookSpec(spec, config);
-      
+
       // Génération du code du hook
       const hookCode = await this.generateHookCode(spec, analysis, config);
-      
+
       // Validation et formatage
       const validation = await this.validator.validateCode(hookCode);
       const formatResult = await this.formatter.formatCode(hookCode);
       const formattedCode = formatResult.success ? formatResult.code : hookCode;
-      
+
       // Génération des tests
-      const testCode = config.tests ? await this.generateHookTests(spec, formattedCode) : null;
-      
+      const testCode = config.tests
+        ? await this.generateHookTests(spec, formattedCode)
+        : null;
+
       // Sauvegarde
       await this.saveToMemory(spec, formattedCode, analysis, validation);
-      
+
       return {
         success: true,
         hook: {
@@ -144,54 +155,69 @@ export default class ReactGenerator {
           code: formattedCode,
           tests: testCode,
           validation,
-          analysis
+          analysis,
         },
         metadata: {
           timestamp: Date.now(),
-          config
-        }
+          config,
+        },
       };
-      
     } catch (error) {
       this.logger.error(`❌ Erreur génération hook ${spec.name}:`, error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Génération d'un contexte React
    */
   async generateContext(spec, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
+
       this.logger.info(`🌐 Génération du contexte: ${spec.name}`);
-      
+
       // Analyse de la spécification
       const analysis = await this.analyzeContextSpec(spec, config);
-      
+
       // Génération du code du contexte
-      const contextCode = await this.generateContextCode(spec, analysis, config);
-      
+      const contextCode = await this.generateContextCode(
+        spec,
+        analysis,
+        config,
+      );
+
       // Génération du provider
-      const providerCode = await this.generateProviderCode(spec, analysis, config);
-      
+      const providerCode = await this.generateProviderCode(
+        spec,
+        analysis,
+        config,
+      );
+
       // Génération du hook d'utilisation
-      const hookCode = await this.generateContextHookCode(spec, analysis, config);
-      
+      const hookCode = await this.generateContextHookCode(
+        spec,
+        analysis,
+        config,
+      );
+
       // Validation et formatage
       const validation = await this.validator.validateCode(contextCode);
       const formatContext = await this.formatter.formatCode(contextCode);
       const formatProvider = await this.formatter.formatCode(providerCode);
       const formatHook = await this.formatter.formatCode(hookCode);
-      
-      const formattedContext = formatContext.success ? formatContext.code : contextCode;
-      const formattedProvider = formatProvider.success ? formatProvider.code : providerCode;
+
+      const formattedContext = formatContext.success
+        ? formatContext.code
+        : contextCode;
+      const formattedProvider = formatProvider.success
+        ? formatProvider.code
+        : providerCode;
       const formattedHook = formatHook.success ? formatHook.code : hookCode;
-      
+
       return {
         success: true,
         context: {
@@ -200,23 +226,22 @@ export default class ReactGenerator {
           provider: formattedProvider,
           hook: formattedHook,
           validation,
-          analysis
+          analysis,
         },
         metadata: {
           timestamp: Date.now(),
-          config
-        }
+          config,
+        },
       };
-      
     } catch (error) {
       this.logger.error(`❌ Erreur génération contexte ${spec.name}:`, error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Analyse de spécification de composant avec l'IA
    */
@@ -242,11 +267,11 @@ Analyse et retourne:
 
 Format: JSON structuré
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Analyse de spécification de hook
    */
@@ -268,11 +293,11 @@ Analyse et retourne:
 
 Format: JSON structuré
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Analyse de spécification de contexte
    */
@@ -293,11 +318,11 @@ Analyse et retourne:
 
 Format: JSON structuré
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Génération du code de composant avec l'IA
    */
@@ -306,8 +331,8 @@ Format: JSON structuré
 Génère un composant React moderne et optimisé:
 
 Nom: ${spec.name}
-Description: ${spec.description || 'Composant React'}
-Type: ${analysis.componentType || 'functional'}
+Description: ${spec.description || "Composant React"}
+Type: ${analysis.componentType || "functional"}
 
 Spécifications:
 ${JSON.stringify(spec, null, 2)}
@@ -333,19 +358,22 @@ Génère un composant qui:
 
 Retourne uniquement le code du composant.
 `;
-    
-    const response = await this.groqClient.generateCode({
-      type: 'component',
-      name: spec.name,
-      prompt
-    }, {
-      temperature: 0.7,
-      maxTokens: 2048
-    });
-    
+
+    const response = await this.groqClient.generateCode(
+      {
+        type: "component",
+        name: spec.name,
+        prompt,
+      },
+      {
+        temperature: 0.7,
+        maxTokens: 2048,
+      },
+    );
+
     return response.code;
   }
-  
+
   /**
    * Génération du code de hook avec l'IA
    */
@@ -354,7 +382,7 @@ Retourne uniquement le code du composant.
 Génère un hook React personnalisé:
 
 Nom: ${spec.name}
-Description: ${spec.description || 'Hook personnalisé'}
+Description: ${spec.description || "Hook personnalisé"}
 
 Spécifications:
 ${JSON.stringify(spec, null, 2)}
@@ -375,16 +403,16 @@ TypeScript: ${config.typescript}
 
 Retourne uniquement le code du hook.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'hook',
+      type: "hook",
       name: spec.name,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Génération du code de contexte
    */
@@ -393,7 +421,7 @@ Retourne uniquement le code du hook.
 Génère un contexte React avec son état et ses types:
 
 Nom: ${spec.name}Context
-Description: ${spec.description || 'Contexte React'}
+Description: ${spec.description || "Contexte React"}
 
 Spécifications:
 ${JSON.stringify(spec, null, 2)}
@@ -412,16 +440,16 @@ TypeScript: ${config.typescript}
 
 Retourne uniquement le code du contexte.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'context',
+      type: "context",
       name: spec.name,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Génération du code de provider
    */
@@ -443,16 +471,16 @@ TypeScript: ${config.typescript}
 
 Retourne uniquement le code du Provider.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'provider',
+      type: "provider",
       name: `${spec.name}Provider`,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Génération du hook d'utilisation du contexte
    */
@@ -471,44 +499,44 @@ TypeScript: ${config.typescript}
 
 Retourne uniquement le code du hook.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'context-hook',
+      type: "context-hook",
       name: `use${spec.name}`,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Génération des fichiers associés
    */
   async generateAssociatedFiles(spec, componentCode, config) {
     const files = {};
-    
+
     // Fichier de styles
-    if (config.styling !== 'styled' && config.styling !== 'tailwind') {
+    if (config.styling !== "styled" && config.styling !== "tailwind") {
       files.styles = await this.generateStylesFile(spec, config);
     }
-    
+
     // Fichier de types TypeScript
     if (config.typescript) {
       files.types = await this.generateTypesFile(spec, componentCode);
     }
-    
+
     // Fichier d'index pour l'export
     files.index = await this.generateIndexFile(spec);
-    
+
     return files;
   }
-  
+
   /**
    * Génération du fichier de styles
    */
   async generateStylesFile(spec, config) {
-    const extension = config.styling === 'scss' ? 'scss' : 'css';
-    
+    const extension = config.styling === "scss" ? "scss" : "css";
+
     const prompt = `
 Génère un fichier de styles ${extension.toUpperCase()} pour le composant ${spec.name}:
 
@@ -524,19 +552,19 @@ Responsive: ${config.responsive}
 
 Retourne uniquement le code CSS/SCSS.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'styles',
+      type: "styles",
       name: `${spec.name}.${extension}`,
-      prompt
+      prompt,
     });
-    
+
     return {
       filename: `${spec.name}.${extension}`,
-      content: response.code
+      content: response.code,
     };
   }
-  
+
   /**
    * Génération du fichier de types
    */
@@ -556,19 +584,19 @@ Génère:
 
 Retourne uniquement les définitions de types.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'types',
+      type: "types",
       name: `${spec.name}.types.ts`,
-      prompt
+      prompt,
     });
-    
+
     return {
       filename: `${spec.name}.types.ts`,
-      content: response.code
+      content: response.code,
     };
   }
-  
+
   /**
    * Génération du fichier d'index
    */
@@ -576,13 +604,13 @@ Retourne uniquement les définitions de types.
     const content = `export { default } from './${spec.name}';
 export * from './${spec.name}';
 `;
-    
+
     return {
-      filename: 'index.js',
-      content
+      filename: "index.js",
+      content,
     };
   }
-  
+
   /**
    * Génération des tests de hook
    */
@@ -605,16 +633,16 @@ Utilise @testing-library/react-hooks pour les tests de hooks.
 
 Retourne uniquement le code des tests.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'test',
+      type: "test",
       name: `${spec.name}.test.js`,
-      prompt
+      prompt,
     });
-    
+
     return response.code;
   }
-  
+
   /**
    * Recherche de composants similaires
    */
@@ -622,17 +650,17 @@ Retourne uniquement le code des tests.
     if (!this.memory.isInitialized) {
       return [];
     }
-    
+
     const similar = await this.memory.findSimilar({
-      type: 'component',
+      type: "component",
       name: spec.name,
       description: spec.description,
-      domain: 'react'
+      domain: "react",
     });
-    
+
     return similar;
   }
-  
+
   /**
    * Sauvegarde en mémoire
    */
@@ -640,20 +668,20 @@ Retourne uniquement le code des tests.
     if (!this.memory.isInitialized) {
       return;
     }
-    
+
     await this.memory.recordGeneration({
-      type: 'component',
+      type: "component",
       name: spec.name,
       code,
       analysis,
       validation,
-      domain: 'react',
+      domain: "react",
       timestamp: Date.now(),
       success: validation.isValid,
-      quality: validation.score / 100
+      quality: validation.score / 100,
     });
   }
-  
+
   /**
    * Écriture des fichiers sur le disque
    */
@@ -662,41 +690,47 @@ Retourne uniquement le code des tests.
       // Création du répertoire du composant
       const componentDir = path.join(outputDir, componentResult.component.name);
       await fs.mkdir(componentDir, { recursive: true });
-      
+
       // Écriture du fichier principal
-      const mainFile = componentResult.component.name + '.jsx';
+      const mainFile = componentResult.component.name + ".jsx";
       await fs.writeFile(
         path.join(componentDir, mainFile),
-        componentResult.component.code
+        componentResult.component.code,
       );
-      
+
       // Écriture des fichiers associés
-      for (const [type, file] of Object.entries(componentResult.component.files)) {
+      for (const [type, file] of Object.entries(
+        componentResult.component.files,
+      )) {
         if (file && file.content) {
           await fs.writeFile(
             path.join(componentDir, file.filename),
-            file.content
+            file.content,
           );
         }
       }
-      
+
       this.logger.info(`📁 Fichiers écrits dans: ${componentDir}`);
-      
+
       return {
         success: true,
         path: componentDir,
-        files: [mainFile, ...Object.values(componentResult.component.files).map(f => f.filename)]
+        files: [
+          mainFile,
+          ...Object.values(componentResult.component.files).map(
+            (f) => f.filename,
+          ),
+        ],
       };
-      
     } catch (error) {
-      this.logger.error('❌ Erreur écriture fichiers:', error);
+      this.logger.error("❌ Erreur écriture fichiers:", error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Obtention des statistiques du générateur
    */
@@ -704,17 +738,23 @@ Retourne uniquement le code des tests.
     if (!this.memory.isInitialized) {
       return { components: 0, hooks: 0, contexts: 0 };
     }
-    
+
     const stats = await this.memory.getStats();
-    const reactGenerations = await this.memory.search('', { type: 'generation', tags: ['react'] });
-    
+    const reactGenerations = await this.memory.search("", {
+      type: "generation",
+      tags: ["react"],
+    });
+
     return {
       totalGenerations: reactGenerations.length,
-      components: reactGenerations.filter(g => g.data.type === 'component').length,
-      hooks: reactGenerations.filter(g => g.data.type === 'hook').length,
-      contexts: reactGenerations.filter(g => g.data.type === 'context').length,
-      averageQuality: reactGenerations.reduce((sum, g) => sum + (g.data.quality || 0), 0) / reactGenerations.length || 0
+      components: reactGenerations.filter((g) => g.data.type === "component")
+        .length,
+      hooks: reactGenerations.filter((g) => g.data.type === "hook").length,
+      contexts: reactGenerations.filter((g) => g.data.type === "context")
+        .length,
+      averageQuality:
+        reactGenerations.reduce((sum, g) => sum + (g.data.quality || 0), 0) /
+          reactGenerations.length || 0,
     };
   }
 }
-

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import StatWidget from '@/components/ui/StatWidget';
-import ProjectList from '@/components/ui/ProjectList';
-import ActivityLog from '@/components/ui/ActivityLog';
+import { useEffect, useState } from "react";
+import StatWidget from "@/components/ui/StatWidget";
+import ProjectList from "@/components/ui/ProjectList";
+import ActivityLog from "@/components/ui/ActivityLog";
 
 export default function DashboardHome() {
   const [stats, setStats] = useState({});
@@ -11,7 +11,7 @@ export default function DashboardHome() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    fetch('/api/dashboard')
+    fetch("/api/dashboard")
       .then((res) => res.json())
       .then((data) => {
         setStats(data.stats || {});
@@ -26,9 +26,21 @@ export default function DashboardHome() {
 
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatWidget title="Générations" value={stats.generations} type="success" />
-        <StatWidget title="Composants uniques" value={stats.components} type="info" />
-        <StatWidget title="Projets créés" value={stats.projects} type="warning" />
+        <StatWidget
+          title="Générations"
+          value={stats.generations}
+          type="success"
+        />
+        <StatWidget
+          title="Composants uniques"
+          value={stats.components}
+          type="info"
+        />
+        <StatWidget
+          title="Projets créés"
+          value={stats.projects}
+          type="warning"
+        />
       </div>
 
       {/* Projets */}

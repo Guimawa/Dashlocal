@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { FolderOpen, Eye, Code, Download } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { FolderOpen, Eye, Code, Download } from "lucide-react";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState([]);
@@ -11,25 +11,32 @@ export default function ProjectsPage() {
     // Simuler le chargement des projets
     setProjects([
       {
-        id: 'handshake-react-pure',
-        name: 'Handshake Dashboard',
-        description: 'React Dashboard UI full frontend avec graphiques et mode sombre',
-        type: 'template',
-        status: 'ready',
-        tech: ['React 19.1.1', 'TypeScript', 'Tailwind CSS 4.1.12', 'Recharts', 'Lucide React'],
-        preview: '/projects/handshake-react-pure/preview',
-        source: '/projects/handshake-react-pure/source'
+        id: "handshake-react-pure",
+        name: "Handshake Dashboard",
+        description:
+          "React Dashboard UI full frontend avec graphiques et mode sombre",
+        type: "template",
+        status: "ready",
+        tech: [
+          "React 19.1.1",
+          "TypeScript",
+          "Tailwind CSS 4.1.12",
+          "Recharts",
+          "Lucide React",
+        ],
+        preview: "/projects/handshake-react-pure/preview",
+        source: "/projects/handshake-react-pure/source",
       },
       {
-        id: 'my-custom-dashboard',
-        name: 'Mon Dashboard Personnalisé',
-        description: 'Dashboard généré par Jarvis avec mes composants',
-        type: 'generated',
-        status: 'in-progress',
-        tech: ['React', 'Tailwind CSS', 'Jarvis Generated'],
-        preview: '/projects/my-custom-dashboard/preview',
-        source: '/projects/my-custom-dashboard/source'
-      }
+        id: "my-custom-dashboard",
+        name: "Mon Dashboard Personnalisé",
+        description: "Dashboard généré par Jarvis avec mes composants",
+        type: "generated",
+        status: "in-progress",
+        tech: ["React", "Tailwind CSS", "Jarvis Generated"],
+        preview: "/projects/my-custom-dashboard/preview",
+        source: "/projects/my-custom-dashboard/source",
+      },
     ]);
   }, []);
 
@@ -51,21 +58,29 @@ export default function ProjectsPage() {
 
       {/* Templates disponibles */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-accent-3">📦 Templates Disponibles</h2>
+        <h2 className="text-xl font-semibold mb-4 text-accent-3">
+          📦 Templates Disponibles
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.filter(p => p.type === 'template').map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
+          {projects
+            .filter((p) => p.type === "template")
+            .map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
         </div>
       </div>
 
       {/* Projets générés */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-accent-2">🚀 Mes Projets</h2>
+        <h2 className="text-xl font-semibold mb-4 text-accent-2">
+          🚀 Mes Projets
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.filter(p => p.type === 'generated').map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
+          {projects
+            .filter((p) => p.type === "generated")
+            .map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
         </div>
       </div>
     </div>
@@ -75,10 +90,14 @@ export default function ProjectsPage() {
 function ProjectCard({ project }) {
   const getStatusColor = () => {
     switch (project.status) {
-      case 'ready': return 'text-accent-1';
-      case 'in-progress': return 'text-accent-2';
-      case 'error': return 'text-accent-4';
-      default: return 'text-gray-600';
+      case "ready":
+        return "text-accent-1";
+      case "in-progress":
+        return "text-accent-2";
+      case "error":
+        return "text-accent-4";
+      default:
+        return "text-gray-600";
     }
   };
 
@@ -89,7 +108,9 @@ function ProjectCard({ project }) {
           <FolderOpen size={20} className="text-accent-3" />
           <h3 className="font-semibold text-lg">{project.name}</h3>
         </div>
-        <span className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor()}`}>
+        <span
+          className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor()}`}
+        >
           {project.status}
         </span>
       </div>
@@ -100,12 +121,17 @@ function ProjectCard({ project }) {
 
       <div className="flex flex-wrap gap-1 mb-4">
         {project.tech.slice(0, 3).map((tech, index) => (
-          <span key={index} className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+          <span
+            key={index}
+            className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded"
+          >
             {tech}
           </span>
         ))}
         {project.tech.length > 3 && (
-          <span className="text-xs text-gray-500">+{project.tech.length - 3}</span>
+          <span className="text-xs text-gray-500">
+            +{project.tech.length - 3}
+          </span>
         )}
       </div>
 

@@ -7,30 +7,30 @@ génération de composants, mémoire, templates, tests, logs d'apprentissage, et
 
 ## 🧭 Routes principales (Next.js App Router)
 
-| Page           | URL             | Description                                |
-|----------------|------------------|--------------------------------------------|
-| Dashboard      | `/`              | Vue globale de l'IA (stats, projets, logs) |
-| Générateur     | `/generate`      | Génération de composants (via prompt)      |
-| Templates      | `/templates`     | Éditeur JSX + Live Preview React           |
-| Projets        | `/projects`      | Gestion des projets et templates           |
-| Générer Handshake | `/generate-handshake` | Générateur basé sur handshake-react-pure |
-| Mémoire        | `/memory`        | Timeline des générations passées           |
-| Apprentissage  | `/learning`      | Logs IA internes (feedbacks, adaptation)   |
-| Tests          | `/tests`         | Liste des tests générés + relance          |
+| Page              | URL                   | Description                                |
+| ----------------- | --------------------- | ------------------------------------------ |
+| Dashboard         | `/`                   | Vue globale de l'IA (stats, projets, logs) |
+| Générateur        | `/generate`           | Génération de composants (via prompt)      |
+| Templates         | `/templates`          | Éditeur JSX + Live Preview React           |
+| Projets           | `/projects`           | Gestion des projets et templates           |
+| Générer Handshake | `/generate-handshake` | Générateur basé sur handshake-react-pure   |
+| Mémoire           | `/memory`             | Timeline des générations passées           |
+| Apprentissage     | `/learning`           | Logs IA internes (feedbacks, adaptation)   |
+| Tests             | `/tests`              | Liste des tests générés + relance          |
 
 ---
 
 ## ⚙️ API internes (via `app/api`)
 
-| Endpoint                     | Méthode | Fonction                                 |
-|------------------------------|---------|------------------------------------------|
-| `/api/generate/react`        | POST    | Génère un composant React                |
-| `/api/generate/handshake`    | POST    | Génère un projet basé sur handshake      |
-| `/api/memory`                | GET     | Récupère l'historique des générations    |
-| `/api/learning`              | GET     | Récupère les logs d'apprentissage IA     |
-| `/api/tests`                 | GET     | Liste des fichiers de test générés       |
-| `/api/tests/:id/rerun`       | POST    | Relance un test par ID                   |
-| `/api/dashboard`             | GET     | Stats globales : générations, projets... |
+| Endpoint                  | Méthode | Fonction                                 |
+| ------------------------- | ------- | ---------------------------------------- |
+| `/api/generate/react`     | POST    | Génère un composant React                |
+| `/api/generate/handshake` | POST    | Génère un projet basé sur handshake      |
+| `/api/memory`             | GET     | Récupère l'historique des générations    |
+| `/api/learning`           | GET     | Récupère les logs d'apprentissage IA     |
+| `/api/tests`              | GET     | Liste des fichiers de test générés       |
+| `/api/tests/:id/rerun`    | POST    | Relance un test par ID                   |
+| `/api/dashboard`          | GET     | Stats globales : générations, projets... |
 
 ---
 
@@ -54,6 +54,7 @@ Centralisés pour le thème, utilisés dans :
 - Figma plugin (ou exports à venir)
 
 ### Exemple contenu :
+
 ```js
 colors: {
   primary: '#2563EB',
@@ -80,24 +81,28 @@ shadows: {
 ## 🚀 **Nouvelles Fonctionnalités Handshake**
 
 ### **📦 Intégration handshake-react-pure**
+
 - **Template complet** : React 19.1.1 + TypeScript + Tailwind CSS 4.1.12
 - **Design tokens** : Couleurs d'accent fluo, effets glow, border-radius 2xl
 - **Composants** : Graphiques Recharts, réseau React Force Graph
 - **Mode sombre** : Intégré par défaut avec design system cohérent
 
 ### **🎨 Améliorations UI**
+
 - **StatWidget** : Types avec couleurs d'accent et effets glow
 - **TestResultItem** : Statuts colorés avec animations
 - **ProjectCard** : Cartes de projet avec actions (Preview, Code, Export)
 - **Effets visuels** : Glow, transitions, hover states
 
 ### **🔧 Générateur Handshake**
+
 - **Page dédiée** : `/generate-handshake` avec configuration avancée
 - **API route** : `/api/generate/handshake` pour génération de projets
 - **Templates** : Package.json, Tailwind config, composants React
 - **Preview** : Pages de preview et source pour chaque projet généré
 
 ### **📱 Gestion des Projets**
+
 - **Page projets** : `/projects` avec templates et projets générés
 - **Navigation** : Intégration dans la sidebar principale
 - **Actions** : Preview, code source, export, génération

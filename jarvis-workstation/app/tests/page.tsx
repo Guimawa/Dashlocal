@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import TestResultItem from '@/components/ui/TestResultItem';
+import { useEffect, useState } from "react";
+import TestResultItem from "@/components/ui/TestResultItem";
 
 export default function TestsScreen() {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/tests')
+    fetch("/api/tests")
       .then((res) => res.json())
       .then((data) => {
         setTests(data || []);
@@ -17,7 +17,7 @@ export default function TestsScreen() {
   }, []);
 
   const handleRerun = async (id) => {
-    await fetch(`/api/tests/${id}/rerun`, { method: 'POST' });
+    await fetch(`/api/tests/${id}/rerun`, { method: "POST" });
     // Optionnel : refetch ou update local
   };
 

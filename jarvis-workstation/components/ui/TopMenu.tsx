@@ -1,30 +1,37 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAppContext } from '../../context/AppContext';
-import { Settings, FileText, Download, Upload, Play, Square } from 'lucide-react';
+import { useState } from "react";
+import { useAppContext } from "../../context/AppContext";
+import {
+  Settings,
+  FileText,
+  Download,
+  Upload,
+  Play,
+  Square,
+} from "lucide-react";
 
 export default function TopMenu() {
   const { settings, updateSettings, addLog } = useAppContext();
   const [showSettings, setShowSettings] = useState(false);
 
   const handleNewFile = () => {
-    addLog('Creating new file');
+    addLog("Creating new file");
     // This would be handled by the context
   };
 
   const handleSave = () => {
-    addLog('Saving file');
+    addLog("Saving file");
     // This would be handled by the context
   };
 
   const handleExport = () => {
-    addLog('Exporting project');
+    addLog("Exporting project");
     // This would be handled by the context
   };
 
   const handleRun = () => {
-    addLog('Running code');
+    addLog("Running code");
     // This would be handled by the context
   };
 
@@ -58,9 +65,9 @@ export default function TopMenu() {
             <span className="text-sm">Export</span>
           </button>
         </div>
-        
+
         <div className="h-6 w-px bg-gray-300" />
-        
+
         <div className="flex items-center space-x-2">
           <button
             onClick={handleRun}
@@ -87,19 +94,23 @@ export default function TopMenu() {
           <span className="text-sm text-gray-600">Theme:</span>
           <select
             value={settings.theme}
-            onChange={(e) => updateSettings({ theme: e.target.value as 'light' | 'dark' })}
+            onChange={(e) =>
+              updateSettings({ theme: e.target.value as "light" | "dark" })
+            }
             className="text-sm border border-gray-300 rounded px-2 py-1"
           >
             <option value="light">Light</option>
             <option value="dark">Dark</option>
           </select>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <span className="text-sm text-gray-600">Font:</span>
           <select
             value={settings.fontSize}
-            onChange={(e) => updateSettings({ fontSize: parseInt(e.target.value) })}
+            onChange={(e) =>
+              updateSettings({ fontSize: parseInt(e.target.value) })
+            }
             className="text-sm border border-gray-300 rounded px-2 py-1"
           >
             <option value={12}>12px</option>
@@ -108,7 +119,7 @@ export default function TopMenu() {
             <option value={18}>18px</option>
           </select>
         </div>
-        
+
         <button
           onClick={() => setShowSettings(!showSettings)}
           className="p-2 rounded hover:bg-gray-100 transition-colors"
@@ -116,7 +127,7 @@ export default function TopMenu() {
         >
           <Settings className="w-4 h-4" />
         </button>
-        
+
         <div className="flex items-center space-x-2 px-3 py-1 rounded bg-gray-100">
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
             <span className="text-white text-xs font-bold">U</span>
@@ -143,7 +154,9 @@ export default function TopMenu() {
               <label className="text-sm">Tab Size</label>
               <select
                 value={settings.tabSize}
-                onChange={(e) => updateSettings({ tabSize: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  updateSettings({ tabSize: parseInt(e.target.value) })
+                }
                 className="text-sm border border-gray-300 rounded px-2 py-1"
               >
                 <option value={2}>2 spaces</option>

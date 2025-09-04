@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ArrowLeft, Copy, Download, Eye } from 'lucide-react';
-import Link from 'next/link';
+import { useState } from "react";
+import { ArrowLeft, Copy, Download, Eye } from "lucide-react";
+import Link from "next/link";
 
 export default function HandshakeSourcePage() {
-  const [activeTab, setActiveTab] = useState('package.json');
-  const [copied, setCopied] = useState('');
+  const [activeTab, setActiveTab] = useState("package.json");
+  const [copied, setCopied] = useState("");
 
   const files = {
-    'package.json': {
+    "package.json": {
       content: `{
   "name": "handshake-react-pure",
   "version": "1.0.0",
@@ -37,9 +37,9 @@ export default function HandshakeSourcePage() {
     "@tailwindcss/postcss": "^4.1.12"
   }
 }`,
-      language: 'json'
+      language: "json",
     },
-    'tailwind.config.js': {
+    "tailwind.config.js": {
       content: `module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -65,9 +65,9 @@ export default function HandshakeSourcePage() {
   },
   plugins: []
 }`,
-      language: 'javascript'
+      language: "javascript",
     },
-    'src/App.tsx': {
+    "src/App.tsx": {
       content: `import React from 'react';
 import HandshakeDashboardTemplate from './components/HandshakeDashboardTemplate';
 import './index.css';
@@ -81,9 +81,9 @@ function App() {
 }
 
 export default App;`,
-      language: 'tsx'
+      language: "tsx",
     },
-    'src/components/HandshakeDashboardTemplate.tsx': {
+    "src/components/HandshakeDashboardTemplate.tsx": {
       content: `import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Search, Filter, TrendingUp, Users, Activity, Zap } from 'lucide-react';
@@ -213,14 +213,14 @@ const HandshakeDashboardTemplate: React.FC = () => {
 };
 
 export default HandshakeDashboardTemplate;`,
-      language: 'tsx'
-    }
+      language: "tsx",
+    },
   };
 
   const copyToClipboard = (content: string, filename: string) => {
     navigator.clipboard.writeText(content);
     setCopied(filename);
-    setTimeout(() => setCopied(''), 2000);
+    setTimeout(() => setCopied(""), 2000);
   };
 
   return (
@@ -235,11 +235,15 @@ export default HandshakeDashboardTemplate;`,
             </button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold">Code Source - Handshake Dashboard</h1>
-            <p className="text-gray-600 dark:text-gray-400">React 19.1.1 + TypeScript + Tailwind CSS 4.1.12</p>
+            <h1 className="text-2xl font-bold">
+              Code Source - Handshake Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              React 19.1.1 + TypeScript + Tailwind CSS 4.1.12
+            </p>
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           <Link href="/projects/handshake-react-pure/preview">
             <button className="flex items-center gap-2 bg-accent-3 text-white px-4 py-2 rounded-lg hover:shadow-glow transition-all">
@@ -262,8 +266,8 @@ export default HandshakeDashboardTemplate;`,
             onClick={() => setActiveTab(filename)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === filename
-                ? 'border-accent-1 text-accent-1'
-                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white'
+                ? "border-accent-1 text-accent-1"
+                : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
             }`}
           >
             {filename}
@@ -280,10 +284,10 @@ export default HandshakeDashboardTemplate;`,
             className="flex items-center gap-1 text-sm text-gray-400 hover:text-white transition-colors"
           >
             <Copy size={16} />
-            {copied === activeTab ? 'Copié!' : 'Copier'}
+            {copied === activeTab ? "Copié!" : "Copier"}
           </button>
         </div>
-        
+
         <div className="p-4">
           <pre className="text-sm text-gray-300 overflow-x-auto">
             <code className={`language-${files[activeTab].language}`}>

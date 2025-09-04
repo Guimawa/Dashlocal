@@ -7,10 +7,10 @@
 // avec couverture complète, tests d'accessibilité et mocking automatique
 // ==============================================
 
-import fs from 'fs/promises';
-import path from 'path';
-import Logger from '../core/logger.js';
-import CodeFormatter from '../utils/formatters.js';
+import fs from "fs/promises";
+import path from "path";
+import Logger from "../core/logger.js";
+import CodeFormatter from "../utils/formatters.js";
 
 /**
  * Générateur de tests avec IA
@@ -19,67 +19,73 @@ export default class TestGenerator {
   constructor(groqClient, memorySystem) {
     this.groqClient = groqClient;
     this.memory = memorySystem;
-    this.logger = new Logger('TestGenerator');
-    
+    this.logger = new Logger("TestGenerator");
+
     // Configuration par défaut
     this.defaultConfig = {
-      framework: 'jest', // jest, vitest
-      testingLibrary: '@testing-library/react',
+      framework: "jest", // jest, vitest
+      testingLibrary: "@testing-library/react",
       coverage: true,
       accessibility: true,
       integration: true,
       e2e: false,
       mocking: true,
       snapshots: false,
-      performance: false
+      performance: false,
     };
-    
+
     // Types de tests supportés
     this.testTypes = {
-      unit: 'Tests unitaires',
-      integration: 'Tests d\'intégration',
-      accessibility: 'Tests d\'accessibilité',
-      performance: 'Tests de performance',
-      e2e: 'Tests end-to-end',
-      visual: 'Tests visuels'
+      unit: "Tests unitaires",
+      integration: "Tests d'intégration",
+      accessibility: "Tests d'accessibilité",
+      performance: "Tests de performance",
+      e2e: "Tests end-to-end",
+      visual: "Tests visuels",
     };
-    
+
     // Patterns de test
     this.testPatterns = {
-      component: 'component-test.pattern',
-      hook: 'hook-test.pattern',
-      utility: 'utility-test.pattern',
-      api: 'api-test.pattern'
+      component: "component-test.pattern",
+      hook: "hook-test.pattern",
+      utility: "utility-test.pattern",
+      api: "api-test.pattern",
     };
   }
-  
+
   /**
    * Génération principale de tests
    */
   async generateTests(spec, sourceCode, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
+
       this.logger.info(`🧪 Génération des tests: ${spec.name}`);
-      
+
       // Analyse du code source pour comprendre la structure
       const codeAnalysis = await this.analyzeSourceCode(sourceCode, spec);
-      
+
       // Génération des différents types de tests
-      const testSuites = await this.generateTestSuites(spec, codeAnalysis, config);
-      
+      const testSuites = await this.generateTestSuites(
+        spec,
+        codeAnalysis,
+        config,
+      );
+
       // Génération des mocks si nécessaire
-      const mocks = config.mocking ? await this.generateMocks(codeAnalysis) : null;
-      
+      const mocks = config.mocking
+        ? await this.generateMocks(codeAnalysis)
+        : null;
+
       // Génération de la configuration de test
       const testConfig = await this.generateTestConfig(spec, config);
-      
+
       // Formatage de tous les fichiers de test
       const formattedTests = await this.formatTestFiles(testSuites);
-      
+
       // Sauvegarde en mémoire
       await this.saveToMemory(spec, testSuites, codeAnalysis);
-      
+
       const result = {
         success: true,
         tests: {
@@ -87,107 +93,129 @@ export default class TestGenerator {
           suites: formattedTests,
           mocks,
           config: testConfig,
-          analysis: codeAnalysis
+          analysis: codeAnalysis,
         },
         metadata: {
           timestamp: Date.now(),
           config,
-          coverage: this.estimateCoverage(testSuites, codeAnalysis)
-        }
+          coverage: this.estimateCoverage(testSuites, codeAnalysis),
+        },
       };
-      
+
       this.logger.info(`✅ Tests ${spec.name} générés avec succès`);
-      
+
       return result;
-      
     } catch (error) {
       this.logger.error(`❌ Erreur génération tests ${spec.name}:`, error);
       return {
         success: false,
         error: error.message,
-        tests: null
+        tests: null,
       };
     }
   }
-  
+
   /**
    * Génération de tests pour composant React
    */
   async generateComponentTests(componentSpec, componentCode, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
-      this.logger.info(`⚛️ Génération des tests de composant: ${componentSpec.name}`);
-      
+
+      this.logger.info(
+        `⚛️ Génération des tests de composant: ${componentSpec.name}`,
+      );
+
       // Analyse spécifique au composant React
-      const componentAnalysis = await this.analyzeReactComponent(componentCode, componentSpec);
-      
+      const componentAnalysis = await this.analyzeReactComponent(
+        componentCode,
+        componentSpec,
+      );
+
       // Génération des tests unitaires
-      const unitTests = await this.generateUnitTests(componentSpec, componentAnalysis, config);
-      
+      const unitTests = await this.generateUnitTests(
+        componentSpec,
+        componentAnalysis,
+        config,
+      );
+
       // Génération des tests d'intégration
-      const integrationTests = config.integration 
-        ? await this.generateIntegrationTests(componentSpec, componentAnalysis, config)
+      const integrationTests = config.integration
+        ? await this.generateIntegrationTests(
+            componentSpec,
+            componentAnalysis,
+            config,
+          )
         : null;
-      
+
       // Génération des tests d'accessibilité
       const a11yTests = config.accessibility
-        ? await this.generateAccessibilityTests(componentSpec, componentAnalysis, config)
+        ? await this.generateAccessibilityTests(
+            componentSpec,
+            componentAnalysis,
+            config,
+          )
         : null;
-      
+
       // Génération des tests de performance
       const performanceTests = config.performance
-        ? await this.generatePerformanceTests(componentSpec, componentAnalysis, config)
+        ? await this.generatePerformanceTests(
+            componentSpec,
+            componentAnalysis,
+            config,
+          )
         : null;
-      
+
       return {
         success: true,
         tests: {
           unit: unitTests,
           integration: integrationTests,
           accessibility: a11yTests,
-          performance: performanceTests
-        }
+          performance: performanceTests,
+        },
       };
-      
     } catch (error) {
       this.logger.error(`❌ Erreur génération tests composant:`, error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Génération de tests pour hook React
    */
   async generateHookTests(hookSpec, hookCode, options = {}) {
     try {
       const config = { ...this.defaultConfig, ...options };
-      
+
       this.logger.info(`🪝 Génération des tests de hook: ${hookSpec.name}`);
-      
+
       // Analyse du hook
       const hookAnalysis = await this.analyzeReactHook(hookCode, hookSpec);
-      
+
       // Génération des tests de hook
-      const hookTests = await this.generateHookTestCode(hookSpec, hookAnalysis, config);
-      
+      const hookTests = await this.generateHookTestCode(
+        hookSpec,
+        hookAnalysis,
+        config,
+      );
+
       return {
         success: true,
-        tests: hookTests
+        tests: hookTests,
       };
-      
     } catch (error) {
       this.logger.error(`❌ Erreur génération tests hook:`, error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Analyse du code source
    */
@@ -215,11 +243,11 @@ Analyse et extrais:
 
 Retourne un JSON structuré avec ces informations.
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Analyse spécifique d'un composant React
    */
@@ -249,11 +277,11 @@ Analyse spécifiquement:
 
 Retourne un JSON avec les éléments à tester.
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Analyse d'un hook React
    */
@@ -279,38 +307,50 @@ Analyse:
 
 Retourne un JSON avec les éléments à tester.
 `;
-    
+
     const response = await this.groqClient.analyzeContext({ prompt });
     return response;
   }
-  
+
   /**
    * Génération des suites de tests
    */
   async generateTestSuites(spec, analysis, config) {
     const suites = {};
-    
+
     // Tests unitaires (toujours générés)
     suites.unit = await this.generateUnitTests(spec, analysis, config);
-    
+
     // Tests d'intégration
     if (config.integration) {
-      suites.integration = await this.generateIntegrationTests(spec, analysis, config);
+      suites.integration = await this.generateIntegrationTests(
+        spec,
+        analysis,
+        config,
+      );
     }
-    
+
     // Tests d'accessibilité
     if (config.accessibility) {
-      suites.accessibility = await this.generateAccessibilityTests(spec, analysis, config);
+      suites.accessibility = await this.generateAccessibilityTests(
+        spec,
+        analysis,
+        config,
+      );
     }
-    
+
     // Tests de performance
     if (config.performance) {
-      suites.performance = await this.generatePerformanceTests(spec, analysis, config);
+      suites.performance = await this.generatePerformanceTests(
+        spec,
+        analysis,
+        config,
+      );
     }
-    
+
     return suites;
   }
-  
+
   /**
    * Génération des tests unitaires
    */
@@ -347,23 +387,26 @@ Utilise les bonnes pratiques:
 
 Retourne uniquement le code des tests.
 `;
-    
-    const response = await this.groqClient.generateCode({
-      type: 'unit-tests',
-      name: `${spec.name}.test.js`,
-      prompt
-    }, {
-      temperature: 0.5,
-      maxTokens: 3072
-    });
-    
+
+    const response = await this.groqClient.generateCode(
+      {
+        type: "unit-tests",
+        name: `${spec.name}.test.js`,
+        prompt,
+      },
+      {
+        temperature: 0.5,
+        maxTokens: 3072,
+      },
+    );
+
     return {
       filename: `${spec.name}.test.js`,
       content: response.code,
-      type: 'unit'
+      type: "unit",
     };
   }
-  
+
   /**
    * Génération des tests d'intégration
    */
@@ -386,20 +429,20 @@ Utilise des scénarios réalistes d'utilisation.
 
 Retourne uniquement le code des tests d'intégration.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'integration-tests',
+      type: "integration-tests",
       name: `${spec.name}.integration.test.js`,
-      prompt
+      prompt,
     });
-    
+
     return {
       filename: `${spec.name}.integration.test.js`,
       content: response.code,
-      type: 'integration'
+      type: "integration",
     };
   }
-  
+
   /**
    * Génération des tests d'accessibilité
    */
@@ -427,20 +470,20 @@ Utilise:
 
 Retourne uniquement le code des tests d'accessibilité.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'accessibility-tests',
+      type: "accessibility-tests",
       name: `${spec.name}.a11y.test.js`,
-      prompt
+      prompt,
     });
-    
+
     return {
       filename: `${spec.name}.a11y.test.js`,
       content: response.code,
-      type: 'accessibility'
+      type: "accessibility",
     };
   }
-  
+
   /**
    * Génération des tests de performance
    */
@@ -467,20 +510,20 @@ Utilise:
 
 Retourne uniquement le code des tests de performance.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'performance-tests',
+      type: "performance-tests",
       name: `${spec.name}.perf.test.js`,
-      prompt
+      prompt,
     });
-    
+
     return {
       filename: `${spec.name}.perf.test.js`,
       content: response.code,
-      type: 'performance'
+      type: "performance",
     };
   }
-  
+
   /**
    * Génération du code de test pour hook
    */
@@ -512,20 +555,20 @@ Structure:
 
 Retourne uniquement le code des tests.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'hook-tests',
+      type: "hook-tests",
       name: `${hookSpec.name}.test.js`,
-      prompt
+      prompt,
     });
-    
+
     return {
       filename: `${hookSpec.name}.test.js`,
       content: response.code,
-      type: 'hook'
+      type: "hook",
     };
   }
-  
+
   /**
    * Génération des mocks
    */
@@ -533,7 +576,7 @@ Retourne uniquement le code des tests.
     if (!analysis.dependencies || analysis.dependencies.length === 0) {
       return null;
     }
-    
+
     const prompt = `
 Génère des mocks Jest pour ces dépendances:
 
@@ -554,105 +597,105 @@ Les mocks doivent:
 
 Retourne le code des mocks.
 `;
-    
+
     const response = await this.groqClient.generateCode({
-      type: 'mocks',
-      name: '__mocks__',
-      prompt
+      type: "mocks",
+      name: "__mocks__",
+      prompt,
     });
-    
+
     return {
-      filename: '__mocks__/index.js',
+      filename: "__mocks__/index.js",
       content: response.code,
-      type: 'mocks'
+      type: "mocks",
     };
   }
-  
+
   /**
    * Génération de la configuration de test
    */
   async generateTestConfig(spec, config) {
     const jestConfig = {
-      testEnvironment: 'jsdom',
-      setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+      testEnvironment: "jsdom",
+      setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
       moduleNameMapping: {
-        '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+        "\\.(css|less|scss|sass)$": "identity-obj-proxy",
       },
       collectCoverageFrom: [
-        'src/**/*.{js,jsx,ts,tsx}',
-        '!src/**/*.d.ts',
-        '!src/index.js',
-        '!src/reportWebVitals.js'
+        "src/**/*.{js,jsx,ts,tsx}",
+        "!src/**/*.d.ts",
+        "!src/index.js",
+        "!src/reportWebVitals.js",
       ],
       coverageThreshold: {
         global: {
           branches: 80,
           functions: 80,
           lines: 80,
-          statements: 80
-        }
+          statements: 80,
+        },
       },
       testMatch: [
-        '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-        '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'
-      ]
+        "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+        "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}",
+      ],
     };
-    
+
     if (config.accessibility) {
-      jestConfig.setupFilesAfterEnv.push('<rootDir>/src/setupA11yTests.js');
+      jestConfig.setupFilesAfterEnv.push("<rootDir>/src/setupA11yTests.js");
     }
-    
+
     return {
-      filename: 'jest.config.js',
+      filename: "jest.config.js",
       content: `module.exports = ${JSON.stringify(jestConfig, null, 2)};`,
-      type: 'config'
+      type: "config",
     };
   }
-  
+
   /**
    * Formatage des fichiers de test
    */
   async formatTestFiles(testSuites) {
     const formatted = {};
-    
+
     for (const [type, suite] of Object.entries(testSuites)) {
       if (suite && suite.content) {
         formatted[type] = {
           ...suite,
-          content: await formatCode(suite.content, 'javascript')
+          content: await formatCode(suite.content, "javascript"),
         };
       }
     }
-    
+
     return formatted;
   }
-  
+
   /**
    * Estimation de la couverture de code
    */
   estimateCoverage(testSuites, analysis) {
     let coverage = 0;
     let totalElements = 0;
-    
+
     // Calcul basé sur les éléments analysés et les tests générés
     if (analysis.functions) {
       totalElements += analysis.functions.length;
       coverage += analysis.functions.length * 0.8; // Estimation 80% de couverture
     }
-    
+
     if (analysis.props) {
       totalElements += analysis.props.length;
       coverage += analysis.props.length * 0.9; // Props généralement bien testées
     }
-    
+
     if (analysis.events) {
       totalElements += analysis.events.length;
       coverage += analysis.events.length * 0.7; // Événements parfois complexes
     }
-    
+
     return totalElements > 0 ? Math.round((coverage / totalElements) * 100) : 0;
   }
-  
+
   /**
    * Sauvegarde en mémoire
    */
@@ -660,30 +703,30 @@ Retourne le code des mocks.
     if (!this.memory.isInitialized) {
       return;
     }
-    
+
     await this.memory.recordGeneration({
-      type: 'tests',
+      type: "tests",
       name: spec.name,
       code: JSON.stringify(testSuites),
       analysis,
-      domain: 'testing',
+      domain: "testing",
       timestamp: Date.now(),
       success: true,
-      quality: 0.85 // Tests généralement de bonne qualité
+      quality: 0.85, // Tests généralement de bonne qualité
     });
   }
-  
+
   /**
    * Écriture des fichiers de test
    */
   async writeTestFiles(testResult, outputDir) {
     try {
       // Création du répertoire de tests
-      const testsDir = path.join(outputDir, '__tests__');
+      const testsDir = path.join(outputDir, "__tests__");
       await fs.mkdir(testsDir, { recursive: true });
-      
+
       const writtenFiles = [];
-      
+
       // Écriture de chaque suite de tests
       for (const [type, suite] of Object.entries(testResult.tests.suites)) {
         if (suite && suite.content) {
@@ -692,121 +735,121 @@ Retourne le code des mocks.
           writtenFiles.push(suite.filename);
         }
       }
-      
+
       // Écriture des mocks
       if (testResult.tests.mocks) {
-        const mocksDir = path.join(outputDir, '__mocks__');
+        const mocksDir = path.join(outputDir, "__mocks__");
         await fs.mkdir(mocksDir, { recursive: true });
-        
+
         await fs.writeFile(
           path.join(mocksDir, testResult.tests.mocks.filename),
-          testResult.tests.mocks.content
+          testResult.tests.mocks.content,
         );
         writtenFiles.push(`__mocks__/${testResult.tests.mocks.filename}`);
       }
-      
+
       // Écriture de la configuration
       if (testResult.tests.config) {
         await fs.writeFile(
           path.join(outputDir, testResult.tests.config.filename),
-          testResult.tests.config.content
+          testResult.tests.config.content,
         );
         writtenFiles.push(testResult.tests.config.filename);
       }
-      
+
       this.logger.info(`📁 Tests écrits dans: ${testsDir}`);
-      
+
       return {
         success: true,
         path: testsDir,
-        files: writtenFiles
+        files: writtenFiles,
       };
-      
     } catch (error) {
-      this.logger.error('❌ Erreur écriture tests:', error);
+      this.logger.error("❌ Erreur écriture tests:", error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Exécution des tests générés
    */
   async runTests(testPath, options = {}) {
     try {
-      const { spawn } = await import('child_process');
-      
-      const testCommand = options.framework === 'vitest' ? 'vitest' : 'jest';
+      const { spawn } = await import("child_process");
+
+      const testCommand = options.framework === "vitest" ? "vitest" : "jest";
       const args = [testPath];
-      
+
       if (options.coverage) {
-        args.push('--coverage');
+        args.push("--coverage");
       }
-      
+
       if (options.watch) {
-        args.push('--watch');
+        args.push("--watch");
       }
-      
+
       return new Promise((resolve, reject) => {
         const testProcess = spawn(testCommand, args, {
-          stdio: 'pipe',
-          cwd: process.cwd()
+          stdio: "pipe",
+          cwd: process.cwd(),
         });
-        
-        let output = '';
-        let errorOutput = '';
-        
-        testProcess.stdout.on('data', (data) => {
+
+        let output = "";
+        let errorOutput = "";
+
+        testProcess.stdout.on("data", (data) => {
           output += data.toString();
         });
-        
-        testProcess.stderr.on('data', (data) => {
+
+        testProcess.stderr.on("data", (data) => {
           errorOutput += data.toString();
         });
-        
-        testProcess.on('close', (code) => {
+
+        testProcess.on("close", (code) => {
           if (code === 0) {
             resolve({
               success: true,
               output,
-              coverage: this.parseCoverageOutput(output)
+              coverage: this.parseCoverageOutput(output),
             });
           } else {
             reject(new Error(`Tests failed with code ${code}: ${errorOutput}`));
           }
         });
       });
-      
     } catch (error) {
-      this.logger.error('❌ Erreur exécution tests:', error);
+      this.logger.error("❌ Erreur exécution tests:", error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
-  
+
   /**
    * Parsing de la sortie de couverture
    */
   parseCoverageOutput(output) {
     // Extraction des métriques de couverture depuis la sortie Jest
-    const coverageMatch = output.match(/All files\s+\|\s+([\d.]+)\s+\|\s+([\d.]+)\s+\|\s+([\d.]+)\s+\|\s+([\d.]+)/);
-    
+    const coverageMatch = output.match(
+      /All files\s+\|\s+([\d.]+)\s+\|\s+([\d.]+)\s+\|\s+([\d.]+)\s+\|\s+([\d.]+)/,
+    );
+
     if (coverageMatch) {
       return {
         statements: parseFloat(coverageMatch[1]),
         branches: parseFloat(coverageMatch[2]),
         functions: parseFloat(coverageMatch[3]),
-        lines: parseFloat(coverageMatch[4])
+        lines: parseFloat(coverageMatch[4]),
       };
     }
-    
+
     return null;
   }
-  
+
   /**
    * Obtention des statistiques du générateur
    */
@@ -814,21 +857,31 @@ Retourne le code des mocks.
     if (!this.memory.isInitialized) {
       return { tests: 0, coverage: 0 };
     }
-    
-    const testGenerations = await this.memory.search('', { 
-      type: 'generation', 
-      tags: ['testing'] 
+
+    const testGenerations = await this.memory.search("", {
+      type: "generation",
+      tags: ["testing"],
     });
-    
+
     return {
       totalTests: testGenerations.length,
-      averageCoverage: testGenerations.reduce((sum, g) => sum + (g.data.coverage || 0), 0) / testGenerations.length || 0,
+      averageCoverage:
+        testGenerations.reduce((sum, g) => sum + (g.data.coverage || 0), 0) /
+          testGenerations.length || 0,
       testTypes: {
-        unit: testGenerations.filter(g => g.data.analysis?.testTypes?.includes('unit')).length,
-        integration: testGenerations.filter(g => g.data.analysis?.testTypes?.includes('integration')).length,
-        accessibility: testGenerations.filter(g => g.data.analysis?.testTypes?.includes('accessibility')).length,
-        performance: testGenerations.filter(g => g.data.analysis?.testTypes?.includes('performance')).length
-      }
+        unit: testGenerations.filter((g) =>
+          g.data.analysis?.testTypes?.includes("unit"),
+        ).length,
+        integration: testGenerations.filter((g) =>
+          g.data.analysis?.testTypes?.includes("integration"),
+        ).length,
+        accessibility: testGenerations.filter((g) =>
+          g.data.analysis?.testTypes?.includes("accessibility"),
+        ).length,
+        performance: testGenerations.filter((g) =>
+          g.data.analysis?.testTypes?.includes("performance"),
+        ).length,
+      },
     };
   }
 }
@@ -836,29 +889,29 @@ Retourne le code des mocks.
 // Fonctions utilitaires pour l'API
 let tests = [
   {
-    id: 'btn-1',
-    name: 'Button renders correctly',
-    status: 'passed',
-    content: `test('Button renders correctly', () => { render(<Button />); })`
+    id: "btn-1",
+    name: "Button renders correctly",
+    status: "passed",
+    content: `test('Button renders correctly', () => { render(<Button />); })`,
   },
   {
-    id: 'input-2',
-    name: 'Input handles change',
-    status: 'failed',
-    content: `test('Input handles change', () => { ... })`
+    id: "input-2",
+    name: "Input handles change",
+    status: "failed",
+    content: `test('Input handles change', () => { ... })`,
   },
   {
-    id: 'form-3',
-    name: 'Form validation works',
-    status: 'passed',
-    content: `test('Form validation works', () => { ... })`
+    id: "form-3",
+    name: "Form validation works",
+    status: "passed",
+    content: `test('Form validation works', () => { ... })`,
   },
   {
-    id: 'modal-4',
-    name: 'Modal opens and closes',
-    status: 'pending',
-    content: `test('Modal opens and closes', () => { ... })`
-  }
+    id: "modal-4",
+    name: "Modal opens and closes",
+    status: "pending",
+    content: `test('Modal opens and closes', () => { ... })`,
+  },
 ];
 
 export function getAllTests() {
@@ -867,5 +920,5 @@ export function getAllTests() {
 
 export function rerunTestById(id) {
   const test = tests.find((t) => t.id === id);
-  if (test) test.status = Math.random() > 0.5 ? 'passed' : 'failed';
+  if (test) test.status = Math.random() > 0.5 ? "passed" : "failed";
 }

@@ -1,5 +1,5 @@
 // app/api/dashboard/route.js
-import { getMemoryHistory } from '@/src/core/memory.js';
+import { getMemoryHistory } from "@/src/core/memory.js";
 
 export async function GET() {
   const history = await getMemoryHistory();
@@ -11,13 +11,13 @@ export async function GET() {
   };
 
   const projects = [
-    { name: 'my-app', path: '/projects/my-app' },
+    { name: "my-app", path: "/projects/my-app" },
     // Dynamique si besoin
   ];
 
   const logs = history.slice(0, 5).map((h) => ({
     date: h.date,
-    message: `Génération : ${h.title || 'Composant'}`
+    message: `Génération : ${h.title || "Composant"}`,
   }));
 
   return Response.json({ stats, projects, logs });
