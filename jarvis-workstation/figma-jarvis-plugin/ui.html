@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jarvis Workstation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background: #ffffff;
+      color: #333333;
+      line-height: 1.5;
+    }
+    
+    .container {
+      padding: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: #0070f3;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .subtitle {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: 1px solid #e1e5e9;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: #0070f3;
+      box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.1);
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #0070f3;
+      color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: #005bb5;
+    }
+    
+    .btn-secondary {
+      background: #f1f3f4;
+      color: #333;
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background: #e8eaed;
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    .status.info {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    .status.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .status.error {
+      background: #ffebee;
+      color: #c62828;
+    }
+    
+    .status.warning {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    .examples {
+      margin-top: 20px;
+    }
+    
+    .examples h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .example-item {
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .example-item:hover {
+      background: #e9ecef;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e1e5e9;
+      border-top: 2px solid #0070f3;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .footer {
+      margin-top: auto;
+      padding-top: 15px;
+      border-top: 1px solid #e1e5e9;
+      text-align: center;
+    }
+    
+    .footer-text {
+      font-size: 11px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">J</div>
+      <h1>Jarvis Workstation</h1>
+      <p class="subtitle">AI-powered UI generation for Figma</p>
+    </div>
+    
+    <div class="form-group">
+      <label for="prompt">Describe the UI you want to create:</label>
+      <textarea 
+        id="prompt" 
+        placeholder="e.g., Create a modern login form with email and password fields, a submit button, and a forgot password link..."
+        rows="4"
+      ></textarea>
+    </div>
+    
+    <div class="button-group">
+      <button id="generate" class="btn-primary">Generate UI</button>
+      <button id="clear" class="btn-secondary">Clear</button>
+    </div>
+    
+    <div id="status" class="status info" style="display: none;">
+      Ready to generate UI
+    </div>
+    
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Generating your UI design...</p>
+    </div>
+    
+    <div class="examples">
+      <h3>Quick Examples:</h3>
+      <div class="example-item" data-prompt="Create a modern dashboard header with logo, navigation menu, and user profile">
+        Dashboard Header
+      </div>
+      <div class="example-item" data-prompt="Design a product card with image, title, price, and add to cart button">
+        Product Card
+      </div>
+      <div class="example-item" data-prompt="Build a contact form with name, email, message fields and submit button">
+        Contact Form
+      </div>
+      <div class="example-item" data-prompt="Create a pricing table with three tiers and feature lists">
+        Pricing Table
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p class="footer-text">Powered by Jarvis Workstation AI</p>
+    </div>
+  </div>
+
+  <script>
+    const promptTextarea = document.getElementById('prompt');
+    const generateButton = document.getElementById('generate');
+    const clearButton = document.getElementById('clear');
+    const statusDiv = document.getElementById('status');
+    const loadingDiv = document.getElementById('loading');
+    const exampleItems = document.querySelectorAll('.example-item');
+
+    // Show status message
+    function showStatus(message, type = 'info') {
+      statusDiv.textContent = message;
+      statusDiv.className = `status ${type}`;
+      statusDiv.style.display = 'block';
+    }
+
+    // Hide status message
+    function hideStatus() {
+      statusDiv.style.display = 'none';
+    }
+
+    // Show loading state
+    function showLoading() {
+      loadingDiv.style.display = 'block';
+      generateButton.disabled = true;
+      promptTextarea.disabled = true;
+    }
+
+    // Hide loading state
+    function hideLoading() {
+      loadingDiv.style.display = 'none';
+      generateButton.disabled = false;
+      promptTextarea.disabled = false;
+    }
+
+    // Generate UI
+    function generateUI() {
+      const prompt = promptTextarea.value.trim();
+      
+      if (!prompt) {
+        showStatus('Please enter a description for your UI', 'warning');
+        return;
+      }
+
+      showLoading();
+      hideStatus();
+
+      parent.postMessage({
+        pluginMessage: {
+          type: 'generate-ui',
+          prompt: prompt
+        }
+      }, '*');
+    }
+
+    // Clear form
+    function clearForm() {
+      promptTextarea.value = '';
+      hideStatus();
+    }
+
+    // Handle example clicks
+    exampleItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const prompt = item.getAttribute('data-prompt');
+        promptTextarea.value = prompt;
+        promptTextarea.focus();
+      });
+    });
+
+    // Event listeners
+    generateButton.addEventListener('click', generateUI);
+    clearButton.addEventListener('click', clearForm);
+
+    // Handle Enter key in textarea
+    promptTextarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        e.preventDefault();
+        generateUI();
+      }
+    });
+
+    // Listen for messages from the plugin
+    window.onmessage = (event) => {
+      if (event.data.pluginMessage) {
+        const { type, message } = event.data.pluginMessage;
+        
+        hideLoading();
+        
+        switch (type) {
+          case 'status':
+            showStatus(message, 'info');
+            break;
+          case 'success':
+            showStatus(message, 'success');
+            break;
+          case 'error':
+            showStatus(message, 'error');
+            break;
+          default:
+            showStatus(message, 'info');
+        }
+      }
+    };
+
+    // Initial status
+    showStatus('Ready to generate UI designs', 'info');
+  </script>
+</body>
+</html>

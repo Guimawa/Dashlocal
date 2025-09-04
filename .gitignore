@@ -1,0 +1,14 @@
+# Fichiers d'environnement
+.env
+.env.local
+.env.development
+.env.test
+
+# Logs
+*.log
+generation-log.json
+
+# Cache
+.groq-cache.json
+node_modules/
+dist/

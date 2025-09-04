@@ -1,0 +1,71 @@
+{
+  "name": "jarvis-ultra-instinct",
+  "version": "2.0.0",
+  "description": "Jarvis Ultra Instinct - CLI intelligent qui génère du code via l'API Groq",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "jarvis": "./jarvis-cli.js",
+    "jarvis-ui": "./jarvis-cli.js"
+  },
+  "scripts": {
+    "start": "node jarvis-cli.js",
+    "dev": "node jarvis-cli.js",
+    "jarvis": "node jarvis-cli.js",
+    "dashboard": "node jarvis-dashboard.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "ai",
+    "code-generation",
+    "cli",
+    "groq",
+    "productivity",
+    "developer-tools",
+    "react",
+    "nextjs",
+    "codegen",
+    "storybook",
+    "testing"
+  ],
+  "author": "Guima",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "chalk": "^5.6.0",
+    "commander": "^9.4.1",
+    "figlet": "^1.8.2",
+    "inquirer": "^12.9.4",
+    "node-fetch": "^3.3.2",
+    "@babel/parser": "^7.23.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.8.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^8.6.14",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/react": "^8.6.14",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.1.3",
+    "ts-jest": "^29.4.1",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.22.0",
+    "@babel/preset-typescript": "^7.23.0"
+  }
+}
